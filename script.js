@@ -215,7 +215,7 @@ function checkFlashcard() {
     currentItem.weight = Math.max(1, currentItem.weight - 1);
     setTimeout(loadFlashcard, 1500);
   } else {
-    feedback.innerText = `Incorrect. The answer is: ${correctVal}`;
+    feedback.innerText = `Incorrect. The answer is: ${correctVal} (${currentItem.py})`;
     feedback.className = "feedback wrong";
     currentItem.weight += 2;
   }
