@@ -60,23 +60,31 @@ async function handleAddWord() {
 async function processWord(chinese, pinyin = null, vietnamese = null) {
   if (vocabulary.find((v) => v.zh === chinese)) return;
 
+  let finalVi = vietnamese || "";
+  let finalPy = pinyin || "";
+
   try {
-    const finalVi = vietnamese || (await fetchTranslation(chinese));
-    const finalPy = pinyin || (await fetchPinyin(chinese));
-
-    const entry = {
-      id: Date.now() + Math.random(),
-      zh: chinese,
-      py: finalPy,
-      vi: finalVi,
-      weight: 5, // Used for spaced repetition logic
-    };
-
-    vocabulary.push(entry);
-    saveAndRefresh();
+    if (!vietnamese) finalVi = await fetchTranslation(chinese);
   } catch (e) {
-    console.error("Error processing word", e);
+    console.warn("Failed to fetch translation:", e);
   }
+
+  try {
+    if (!pinyin) finalPy = await fetchPinyin(chinese);
+  } catch (e) {
+    console.warn("Failed to fetch pinyin:", e);
+  }
+
+  const entry = {
+    id: Date.now() + Math.random(),
+    zh: chinese,
+    py: finalPy,
+    vi: finalVi,
+    weight: 5, // Used for spaced repetition logic
+  };
+
+  vocabulary.push(entry);
+  saveAndRefresh();
 }
 
 /**
