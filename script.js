@@ -239,18 +239,16 @@ function checkQuiz(selected, btn) {
  * UTILITIES
  */
 async function fetchTranslation(text) {
-  const res = await fetch(
-    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh-CN|vi-VN`,
-  );
+  const targetUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh-CN|vi-VN`;
+  const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
   const data = await res.json();
   return data.responseData.translatedText;
 }
 
 async function fetchPinyin(text) {
   try {
-    const res = await fetch(
-      `https://api.pinyingenerator.com/convert?text=${encodeURIComponent(text)}`,
-    );
+    const targetUrl = `https://api.pinyingenerator.com/convert?text=${encodeURIComponent(text)}`;
+    const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
     const data = await res.json();
     return data.pinyin || "";
   } catch {
