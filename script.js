@@ -171,8 +171,12 @@ function loadFlashcard() {
   if (vocabulary.length === 0) return;
 
   // Spaced Repetition: Sort by weight and pick from top 60%
+  // Prioritize newly added words (higher id) if weights are equal
   const pool = [...vocabulary]
-    .sort((a, b) => b.weight - a.weight)
+    .sort((a, b) => {
+      if (b.weight === a.weight) return b.id - a.id;
+      return b.weight - a.weight;
+    })
     .slice(0, Math.ceil(vocabulary.length * 0.6));
   currentItem = pool[Math.floor(Math.random() * pool.length)];
 
