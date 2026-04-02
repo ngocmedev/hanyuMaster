@@ -31,6 +31,22 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("flash-answer").addEventListener("keypress", (e) => {
     if (e.key === "Enter") checkFlashcard();
   });
+
+  // Mobile Web Speech API Initialization
+  let speechInitialized = false;
+  const initSpeech = () => {
+    if (speechInitialized) return;
+    if ("speechSynthesis" in window) {
+      const msg = new SpeechSynthesisUtterance("");
+      msg.volume = 0;
+      window.speechSynthesis.speak(msg);
+    }
+    speechInitialized = true;
+    document.removeEventListener("click", initSpeech);
+    document.removeEventListener("touchstart", initSpeech);
+  };
+  document.addEventListener("click", initSpeech);
+  document.addEventListener("touchstart", initSpeech);
 });
 
 /**
@@ -93,7 +109,7 @@ async function processWord(chinese, pinyin = null, vietnamese = null) {
 let sheetJSLoaded = false;
 async function loadSheetJS() {
   if (sheetJSLoaded) return;
-  
+
   // Show loading indicator
   const uploadBtn = document.querySelector('.import-tools .btn-secondary');
   const originalHtml = uploadBtn ? uploadBtn.innerHTML : '';
@@ -307,9 +323,12 @@ async function fetchPinyin(text) {
 }
 
 function speak(text) {
-  const msg = new SpeechSynthesisUtterance(text);
-  msg.lang = "zh-CN";
-  window.speechSynthesis.speak(msg);
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.lang = "zh-CN";
+    window.speechSynthesis.speak(msg);
+  }
 }
 
 function updateVocabUI() {
