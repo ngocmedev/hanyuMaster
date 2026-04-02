@@ -190,6 +190,30 @@ button {
   color: var(--error);
 }
 
+.input-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.input-container input {
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.controls button {
+  flex: 1;
+}
+
 .options-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

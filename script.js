@@ -38,8 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 async function handleAddWord() {
   const input = document.getElementById("chinese-input");
+  const btn = document.getElementById("add-btn");
   const zh = input.value.trim();
   if (!zh) return;
+
+  btn.disabled = true;
+  const originalText = btn.innerText;
+  btn.innerText = "Loading...";
 
   input.disabled = true;
   input.placeholder = "Translating...";
@@ -47,6 +52,9 @@ async function handleAddWord() {
   input.value = "";
   input.disabled = false;
   input.placeholder = "Enter Hanzi (e.g. 学习)";
+
+  btn.disabled = false;
+  btn.innerText = originalText;
 }
 
 async function processWord(chinese, pinyin = null, vietnamese = null) {
