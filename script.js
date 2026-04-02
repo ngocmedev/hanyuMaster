@@ -64,13 +64,13 @@ async function processWord(chinese, pinyin = null, vietnamese = null) {
   let finalPy = pinyin || "";
 
   try {
-    if (!vietnamese) finalVi = await fetchTranslation(chinese);
+    if (!vietnamese) finalVi = (await fetchTranslation(chinese)) || "";
   } catch (e) {
     console.warn("Failed to fetch translation:", e);
   }
 
   try {
-    if (!pinyin) finalPy = await fetchPinyin(chinese);
+    if (!pinyin) finalPy = (await fetchPinyin(chinese)) || "";
   } catch (e) {
     console.warn("Failed to fetch pinyin:", e);
   }
@@ -197,8 +197,9 @@ function checkFlashcard() {
     .value.trim()
     .toLowerCase();
   const feedback = document.getElementById("flash-feedback");
+  const viText = currentItem.vi || "";
   const correctVal =
-    flashMode === "vi-zh" ? currentItem.zh : currentItem.vi.toLowerCase();
+    flashMode === "vi-zh" ? currentItem.zh : viText.toLowerCase();
 
   // Voice prompt triggers for every answer check
   speak(currentItem.zh);
@@ -285,7 +286,7 @@ function checkQuiz(selected, btn) {
  */
 async function fetchTranslation(text) {
   const targetUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh-CN|vi-VN`;
-  const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
+  const res = await fetch(targetUrl);
   const data = await res.json();
   return data.responseData.translatedText;
 }
