@@ -82,9 +82,41 @@ async function processWord(chinese, pinyin = null, vietnamese = null) {
 /**
  * EXCEL IMPORT
  */
-function handleExcelImport(event) {
+let sheetJSLoaded = false;
+async function loadSheetJS() {
+  if (sheetJSLoaded) return;
+  
+  // Show loading indicator
+  const uploadBtn = document.querySelector('.import-tools .btn-secondary');
+  const originalHtml = uploadBtn ? uploadBtn.innerHTML : '';
+  if (uploadBtn) uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js";
+    script.onload = () => {
+      sheetJSLoaded = true;
+      if (uploadBtn) uploadBtn.innerHTML = originalHtml;
+      resolve();
+    };
+    script.onerror = () => {
+      if (uploadBtn) uploadBtn.innerHTML = originalHtml;
+      alert("Failed to load Excel library. Please check your internet connection.");
+      reject(new Error("Failed to load SheetJS"));
+    };
+    document.head.appendChild(script);
+  });
+}
+async function handleExcelImport(event) {
   const file = event.target.files[0];
   if (!file) return;
+
+  try {
+    await loadSheetJS();
+  } catch (e) {
+    event.target.value = "";
+    return;
+  }
 
   const reader = new FileReader();
   reader.onload = async (e) => {
@@ -107,7 +139,12 @@ function handleExcelImport(event) {
   reader.readAsArrayBuffer(file);
 }
 
-function downloadTemplate() {
+async function downloadTemplate() {
+  try {
+    await loadSheetJS();
+  } catch (e) {
+    return;
+  }
   const data = [
     ["Chinese", "Pinyin", "Vietnamese"],
     ["你好", "nǐ hǎo", "Xin chào"],
