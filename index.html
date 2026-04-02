@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HanyuMaster - Chinese Learning App</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -40,7 +41,7 @@
               id="chinese-input"
               placeholder="Nhập Hanzi (VD: 学习)"
             />
-            <button id="add-btn" class="btn-primary">Add Word</button>
+            <button id="add-btn" class="btn-primary">Thêm</button>
           </div>
 
           <div class="import-tools">
@@ -53,7 +54,7 @@
               <i class="fas fa-file-import"></i> Import Excel
             </button>
             <button class="btn-text" onclick="downloadTemplate()">
-              Download Template
+              Tải Mẫu Excel
             </button>
           </div>
         </div>
@@ -61,7 +62,7 @@
         <div class="library-header">
           <h3>Thư viện (<span id="vocab-count">0</span> từ)</h3>
           <button class="btn-danger-outline" onclick="resetProgress()">
-            Reset Progress
+            Xoá Từ Vựng
           </button>
         </div>
         <div id="vocab-list" class="vocab-grid"></div>
