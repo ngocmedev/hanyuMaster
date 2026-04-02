@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HanyuMaster - Chinese Learning App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- SheetJS for Excel Parsing -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">Hanyu<span>Master</span></div>
+      <div class="nav-links">
+        <button onclick="showSection('manage')">
+          <i class="fas fa-book"></i> <span>Manage</span>
+        </button>
+        <button onclick="showSection('flashcard')">
+          <i class="fas fa-clone"></i> <span>Flashcards</span>
+        </button>
+        <button onclick="showSection('quiz')">
+          <i class="fas fa-tasks"></i> <span>Quiz</span>
+        </button>
+        <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+      </div>
+    </nav>
+
+    <main class="container">
+      <!-- MANAGEMENT SECTION -->
+      <section id="manage-section" class="active">
+        <div class="card">
+          <h2>Thư viện từ vựng</h2>
+          <div class="input-group">
+            <input
+              type="text"
+              id="chinese-input"
+              placeholder="Nhập Hanzi (VD: 学习)"
+            />
+            <button id="add-btn" class="btn-primary">Add Word</button>
+          </div>
+
+          <div class="import-tools">
+            <p>Thêm file excel vào đây(.xlsx)</p>
+            <input type="file" id="excel-upload" accept=".xlsx, .xls" hidden />
+            <button
+              class="btn-secondary"
+              onclick="document.getElementById('excel-upload').click()"
+            >
+              <i class="fas fa-file-import"></i> Import Excel
+            </button>
+            <button class="btn-text" onclick="downloadTemplate()">
+              Download Template
+            </button>
+          </div>
+        </div>
+
+        <div class="library-header">
+          <h3>Thư viện (<span id="vocab-count">0</span> từ)</h3>
+          <button class="btn-danger-outline" onclick="resetProgress()">
+            Reset Progress
+          </button>
+        </div>
+        <div id="vocab-list" class="vocab-grid"></div>
+      </section>
+
+      <!-- FLASHCARD SECTION -->
+      <section id="flashcard-section">
+        <div class="stats-bar">
+          <span>Score: <b id="flash-score" class="correct">0</b></span>
+          <button class="btn-sm" onclick="toggleFlashMode()">
+            <i class="fas fa-sync"></i> Swap Mode
+          </button>
+        </div>
+        <div class="card flash-card">
+          <div id="flash-mode-label" class="label">Dịch sang tiếng trung:</div>
+          <div id="flash-prompt" class="prompt-text">---</div>
+          <div id="flash-feedback" class="feedback"></div>
+          <div class="input-container">
+            <input
+              type="text"
+              id="flash-answer"
+              placeholder="Đáp án..."
+              autocomplete="off"
+            />
+          </div>
+          <div class="controls">
+            <button id="flash-submit" class="btn-primary">Check</button>
+            <button id="flash-next" class="btn-secondary">Next / Skip</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUIZ SECTION -->
+      <section id="quiz-section">
+        <div class="stats-bar">
+          <span>Quiz Score: <b id="quiz-score" class="correct">0</b></span>
+        </div>
+        <div class="card quiz-card">
+          <div class="label">Select the correct Chinese:</div>
+          <div id="quiz-question" class="prompt-text">---</div>
+          <div id="quiz-options" class="options-grid"></div>
+          <div id="quiz-feedback" class="feedback"></div>
+          <button id="quiz-next" class="btn-primary hidden">
+            Next Question
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
