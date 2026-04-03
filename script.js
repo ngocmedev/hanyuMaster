@@ -459,179 +459,113 @@ function loadSentenceFlashcard() {
       {
         zh: "我喜欢这个[word]。",
         py: "wǒ xǐ huan zhè ge [word].",
-        vi: "Tôi thích [word] này.",
+        vi: "Tôi thích [word] này.",     // S + V + O
       },
       {
-        zh: "你有[word]吗？",
-        py: "nǐ yǒu [word] ma?",
-        vi: "Bạn có [word] không?",
+        zh: "你的[word]在哪儿？",
+        py: "nǐ de [word] zài nǎr?",
+        vi: "[word] của bạn ở đâu?",   // S + 在 + địa điểm & Câu hỏi nghi vấn
       },
       {
-        zh: "我想买[word]。",
-        py: "wǒ xiǎng mǎi [word].",
-        vi: "Tôi muốn mua [word].",
+        zh: "我没有[word]。",
+        py: "wǒ méi yǒu [word].",
+        vi: "Tôi không có [word].",      // S + 没有 + O
       },
       {
-        zh: "那是我的[word]。",
-        py: "nà shì wǒ de [word].",
-        vi: "Đó là [word] của tôi.",
-      },
-      { zh: "[word]在哪里？", py: "[word] zài nǎ lǐ?", vi: "[word] ở đâu?" },
-
-      // thêm câu có ngữ cảnh
-      {
-        zh: "这个[word]对我来说很重要。",
-        py: "zhè ge [word] duì wǒ lái shuō hěn zhòng yào.",
-        vi: "[word] này rất quan trọng với tôi.",
+        zh: "这个[word]很大。",
+        py: "zhè ge [word] hěn dà.",
+        vi: "[word] này rất lớn.",       // S + 很 + Adj
       },
       {
-        zh: "我每天都会用这个[word]。",
-        py: "wǒ měi tiān dōu huì yòng zhè ge [word].",
-        vi: "Tôi dùng [word] này mỗi ngày.",
-      },
-      {
-        zh: "如果没有[word]，会很麻烦。",
-        py: "rú guǒ méi yǒu [word], huì hěn má fan.",
-        vi: "Nếu không có [word] thì sẽ rất phiền.",
-      },
-      {
-        zh: "这个[word]的质量很好。",
-        py: "zhè ge [word] de zhì liàng hěn hǎo.",
-        vi: "Chất lượng của [word] này rất tốt.",
-      },
+        zh: "那是谁的[word]？",
+        py: "nà shì shéi de [word]?",
+        vi: "Đó là [word] của ai?",      // Cấu trúc "的"
+      }
     ],
 
     verb: [
-      { zh: "我想[word]。", py: "wǒ xiǎng [word].", vi: "Tôi muốn [word]." },
+      {
+        zh: "我想[word]。",
+        py: "wǒ xiǎng [word].",
+        vi: "Tôi muốn [word]."           // MUỐN (想)
+      },
       {
         zh: "他正在[word]。",
         py: "tā zhèng zài [word].",
-        vi: "Anh ấy đang [word].",
+        vi: "Anh ấy đang [word].",       // ĐANG DIỄN RA (正在)
       },
       {
-        zh: "大家一起[word]吧！",
-        py: "dà jiā yì qǐ [word] ba!",
-        vi: "Mọi người cùng nhau [word] đi!",
+        zh: "不要[word]！",
+        py: "bú yào [word]!",
+        vi: "Đừng [word]!",              // MỆNH LỆNH (不要)
+      },
+      {
+        zh: "我已经[word]了。",
+        py: "wǒ yǐ jīng [word] le.",
+        vi: "Tôi đã [word] rồi.",        // QUÁ KHỨ (了)
       },
       {
         zh: "你可以[word]吗？",
         py: "nǐ kě yǐ [word] ma?",
-        vi: "Bạn có thể [word] không?",
-      },
-      { zh: "不要[word]。", py: "bú yào [word].", vi: "Đừng [word]." },
-
-      // thêm câu thực tế hơn
-      {
-        zh: "我已经学会怎么[word]了。",
-        py: "wǒ yǐ jīng xué huì zěn me [word] le.",
-        vi: "Tôi đã học được cách [word] rồi.",
-      },
-      {
-        zh: "他每天都会花时间[word]。",
-        py: "tā měi tiān dōu huì huā shí jiān [word].",
-        vi: "Anh ấy mỗi ngày đều dành thời gian để [word].",
-      },
-      {
-        zh: "如果你努力，就可以[word]。",
-        py: "rú guǒ nǐ nǔ lì, jiù kě yǐ [word].",
-        vi: "Nếu bạn cố gắng thì có thể [word].",
-      },
-      {
-        zh: "我不太喜欢[word]，因为太累了。",
-        py: "wǒ bú tài xǐ huan [word], yīn wèi tài lèi le.",
-        vi: "Tôi không thích [word] lắm vì quá mệt.",
-      },
+        vi: "Bạn có thể [word] không?",  // CÓ THỂ (可以) & Câu hỏi "吗"
+      }
     ],
 
     adj: [
       {
-        zh: "这个很[word]。",
-        py: "zhè ge hěn [word].",
-        vi: "Cái này rất [word].",
+        zh: "他很[word]。",
+        py: "tā hěn [word].",
+        vi: "Anh ấy rất [word].",        // S + 很 + Adj
       },
       {
-        zh: "真的太[word]了！",
-        py: "zhēn de tài [word] le!",
-        vi: "Thực sự quá [word] rồi!",
+        zh: "今天比昨天[word]。",
+        py: "jīn tiān bǐ zuó tiān [word].",
+        vi: "Hôm nay [word] hơn hôm qua.", // SO SÁNH (比)
       },
       {
-        zh: "我觉得非常[word]。",
-        py: "wǒ jué de fēi cháng [word].",
-        vi: "Tôi cảm thấy vô cùng [word].",
+        zh: "我不[word]。",
+        py: "wǒ bù [word].",
+        vi: "Tôi không [word].",         // PHỦ ĐỊNH (不)
       },
       {
-        zh: "它一点都不[word]。",
-        py: "tā yì diǎn dōu bù [word].",
-        vi: "Nó một chút cũng không [word].",
-      },
-
-      // nâng cấp
-      {
-        zh: "这个地方又[word]又安静。",
-        py: "zhè ge dì fang yòu [word] yòu ān jìng.",
-        vi: "Nơi này vừa [word] vừa yên tĩnh.",
+        zh: "越来越[word]了。",
+        py: "yuè lái yuè [word] le.",
+        vi: "Càng ngày càng [word].",    // CÀNG… CÀNG… (越…越…)
       },
       {
-        zh: "今天的天气比昨天更[word]。",
-        py: "jīn tiān de tiān qì bǐ zuó tiān gèng [word].",
-        vi: "Thời tiết hôm nay [word] hơn hôm qua.",
-      },
-      {
-        zh: "这个问题没有你想的那么[word]。",
-        py: "zhè ge wèn tí méi yǒu nǐ xiǎng de nà me [word].",
-        vi: "Vấn đề này không [word] như bạn nghĩ.",
-      },
-      {
-        zh: "我对这个结果很[word]。",
-        py: "wǒ duì zhè ge jié guǒ hěn [word].",
-        vi: "Tôi rất [word] với kết quả này.",
-      },
+        zh: "为什么那么[word]？",
+        py: "wèi shén me nà me [word]?",
+        vi: "Tại sao lại [word] thế?",   // TẠI SAO (为什么)
+      }
     ],
 
     pronoun: [
       {
-        zh: "[word]是我的好朋友。",
-        py: "[word] shì wǒ de hǎo péng you.",
-        vi: "[word] là bạn tốt của tôi.",
+        zh: "[word]是老师。",
+        py: "[word] shì lǎo shī.",
+        vi: "[word] là giáo viên.",      // Câu “là” (是)
       },
       {
-        zh: "这是[word]的东西。",
-        py: "zhè shì [word] de dōng xi.",
-        vi: "Đây là đồ của [word].",
+        zh: "我和[word]一起去。",
+        py: "wǒ hé [word] yì qǐ qù.",
+        vi: "Tôi đi cùng [word].",       // LIÊN KẾT CÂU (和)
       },
       {
-        zh: "我要和[word]一起去。",
-        py: "wǒ yào hé [word] yì qǐ qù.",
-        vi: "Tôi muốn đi cùng [word].",
+        zh: "我给[word]打电话。",
+        py: "wǒ gěi [word] dǎ diàn huà.",
+        vi: "Tôi gọi điện cho [word].",  // CẤU TRÚC “给”
       },
       {
-        zh: "[word]不知道。",
-        py: "[word] bù zhī dào.",
-        vi: "[word] không biết.",
-      },
-
-      // thêm chiều sâu
-      {
-        zh: "[word]已经告诉我答案了。",
-        py: "[word] yǐ jīng gào sù wǒ dá àn le.",
-        vi: "[word] đã nói cho tôi câu trả lời rồi.",
+        zh: "[word]想吃苹果。",
+        py: "[word] xiǎng chī píng guǒ.",
+        vi: "[word] muốn ăn táo.",       // MUỐN (想)
       },
       {
-        zh: "没有[word]，我可能做不到。",
-        py: "méi yǒu [word], wǒ kě néng zuò bú dào.",
-        vi: "Không có [word], tôi có thể không làm được.",
-      },
-      {
-        zh: "[word]总是支持我。",
-        py: "[word] zǒng shì zhī chí wǒ.",
-        vi: "[word] luôn ủng hộ tôi.",
-      },
-      {
-        zh: "这件事只有[word]知道。",
-        py: "zhè jiàn shì zhǐ yǒu [word] zhī dào.",
-        vi: "Chuyện này chỉ có [word] biết.",
-      },
-    ],
+        zh: "[word]喜欢咖啡吗？",
+        py: "[word] xǐ huan kā fēi ma?",
+        vi: "[word] có thích cà phê không?", // Câu hỏi “吗”
+      }
+    ]
   };
 
   const targetWord = validWords[Math.floor(Math.random() * validWords.length)];
@@ -1287,155 +1221,295 @@ const listeningDecks = [
       {
         question: "Q1. 你好 的意思是什么？",
         options: ["A. Tạm biệt", "B. Xin lỗi", "C. Xin chào", "D. Cảm ơn"],
-        correctIndex: 2
+        correctIndex: 2,
       },
       {
         question: "Q2. 你好吗？是什么意思？",
-        options: ["A. Bạn ăn chưa?", "B. Bạn có khỏe không?", "C. Bạn đi đâu?", "D. Bạn làm gì?"],
-        correctIndex: 1
+        options: [
+          "A. Bạn ăn chưa?",
+          "B. Bạn có khỏe không?",
+          "C. Bạn đi đâu?",
+          "D. Bạn làm gì?",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q3. 我很好 表达什么意思？",
-        options: ["A. Tôi rất tốt", "B. Tôi mệt", "C. Tôi không khỏe", "D. Tôi bận"],
-        correctIndex: 0
+        options: [
+          "A. Tôi rất tốt",
+          "B. Tôi mệt",
+          "C. Tôi không khỏe",
+          "D. Tôi bận",
+        ],
+        correctIndex: 0,
       },
       {
         question: "Q4. 你呢？是什么意思？",
-        options: ["A. Bạn làm gì", "B. Bạn ở đâu", "C. Còn bạn thì sao?", "D. Bạn đi đâu"],
-        correctIndex: 2
+        options: [
+          "A. Bạn làm gì",
+          "B. Bạn ở đâu",
+          "C. Còn bạn thì sao?",
+          "D. Bạn đi đâu",
+        ],
+        correctIndex: 2,
       },
       {
         question: "Q5. 很高兴认识你 的意思是？",
-        options: ["A. Rất vui được gặp bạn", "B. Xin lỗi", "C. Tạm biệt", "D. Chúc may mắn"],
-        correctIndex: 0
+        options: [
+          "A. Rất vui được gặp bạn",
+          "B. Xin lỗi",
+          "C. Tạm biệt",
+          "D. Chúc may mắn",
+        ],
+        correctIndex: 0,
       },
       {
         question: "Q6. 我叫小明 表达什么？",
-        options: ["A. Tôi là học sinh", "B. Tôi là bạn", "C. Tôi tên là Tiểu Minh", "D. Tôi là giáo viên"],
-        correctIndex: 2
+        options: [
+          "A. Tôi là học sinh",
+          "B. Tôi là bạn",
+          "C. Tôi tên là Tiểu Minh",
+          "D. Tôi là giáo viên",
+        ],
+        correctIndex: 2,
       },
       {
         question: "Q7. 我是学生 是什么意思？",
-        options: ["A. Tôi là học sinh", "B. Tôi là giáo viên", "C. Tôi là bạn", "D. Tôi là bác sĩ"],
-        correctIndex: 0
+        options: [
+          "A. Tôi là học sinh",
+          "B. Tôi là giáo viên",
+          "C. Tôi là bạn",
+          "D. Tôi là bác sĩ",
+        ],
+        correctIndex: 0,
       },
       {
         question: "Q8. 他是老师 的意思是？",
-        options: ["A. Anh ấy là bạn", "B. Anh ấy là giáo viên", "C. Anh ấy là bố", "D. Anh ấy là học sinh"],
-        correctIndex: 1
+        options: [
+          "A. Anh ấy là bạn",
+          "B. Anh ấy là giáo viên",
+          "C. Anh ấy là bố",
+          "D. Anh ấy là học sinh",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q9. 我是中国人 表达什么？",
-        options: ["A. Tôi là học sinh", "B. Tôi là người Trung Quốc", "C. Tôi là giáo viên", "D. Tôi là người Việt"],
-        correctIndex: 1
+        options: [
+          "A. Tôi là học sinh",
+          "B. Tôi là người Trung Quốc",
+          "C. Tôi là giáo viên",
+          "D. Tôi là người Việt",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q10. 你是学生吗？ hỏi gì?",
-        options: ["A. Bạn có phải học sinh không?", "B. Bạn đi đâu?", "C. Bạn ăn chưa?", "D. Bạn có khỏe không?"],
-        correctIndex: 0
+        options: [
+          "A. Bạn có phải học sinh không?",
+          "B. Bạn đi đâu?",
+          "C. Bạn ăn chưa?",
+          "D. Bạn có khỏe không?",
+        ],
+        correctIndex: 0,
       },
       {
         question: "Q11. 你叫什么名字？ hỏi gì?",
-        options: ["A. Bạn ở đâu", "B. Bạn làm gì", "C. Bạn tên gì", "D. Bạn bao nhiêu tuổi"],
-        correctIndex: 2
+        options: [
+          "A. Bạn ở đâu",
+          "B. Bạn làm gì",
+          "C. Bạn tên gì",
+          "D. Bạn bao nhiêu tuổi",
+        ],
+        correctIndex: 2,
       },
       {
         question: "Q12. 你几岁？是什么意思？",
-        options: ["A. Bạn làm gì", "B. Bạn bao nhiêu tuổi", "C. Bạn học gì", "D. Bạn ở đâu"],
-        correctIndex: 1
+        options: [
+          "A. Bạn làm gì",
+          "B. Bạn bao nhiêu tuổi",
+          "C. Bạn học gì",
+          "D. Bạn ở đâu",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q13. 你在哪儿？ hỏi gì?",
-        options: ["A. Bạn ở đâu", "B. Bạn đi đâu", "C. Bạn thích gì", "D. Bạn làm gì"],
-        correctIndex: 0
+        options: [
+          "A. Bạn ở đâu",
+          "B. Bạn đi đâu",
+          "C. Bạn thích gì",
+          "D. Bạn làm gì",
+        ],
+        correctIndex: 0,
       },
       {
         question: "Q14. 你去哪儿？是什么意思？",
-        options: ["A. Bạn làm gì", "B. Bạn thích gì", "C. Bạn đi đâu", "D. Bạn ở đâu"],
-        correctIndex: 2
+        options: [
+          "A. Bạn làm gì",
+          "B. Bạn thích gì",
+          "C. Bạn đi đâu",
+          "D. Bạn ở đâu",
+        ],
+        correctIndex: 2,
       },
       {
         question: "Q15. 这是什么？ hỏi gì?",
-        options: ["A. Đây là ai", "B. Đây làm gì", "C. Đây là cái gì", "D. Đây ở đâu"],
-        correctIndex: 2
+        options: [
+          "A. Đây là ai",
+          "B. Đây làm gì",
+          "C. Đây là cái gì",
+          "D. Đây ở đâu",
+        ],
+        correctIndex: 2,
       },
       {
         question: "Q16. 我去学校 表达 gì?",
-        options: ["A. Tôi ăn cơm", "B. Tôi đi học", "C. Tôi uống nước", "D. Tôi ngủ"],
-        correctIndex: 1
+        options: [
+          "A. Tôi ăn cơm",
+          "B. Tôi đi học",
+          "C. Tôi uống nước",
+          "D. Tôi ngủ",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q17. 我吃饭 是 gì?",
-        options: ["A. Tôi ngủ", "B. Tôi ăn cơm", "C. Tôi đi học", "D. Tôi uống nước"],
-        correctIndex: 1
+        options: [
+          "A. Tôi ngủ",
+          "B. Tôi ăn cơm",
+          "C. Tôi đi học",
+          "D. Tôi uống nước",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q18. 我喝水 表达 gì?",
-        options: ["A. Tôi uống nước", "B. Tôi ăn cơm", "C. Tôi ngủ", "D. Tôi đi học"],
-        correctIndex: 0
+        options: [
+          "A. Tôi uống nước",
+          "B. Tôi ăn cơm",
+          "C. Tôi ngủ",
+          "D. Tôi đi học",
+        ],
+        correctIndex: 0,
       },
       {
         question: "Q19. 我学习汉语 nghĩa là?",
-        options: ["A. Tôi học tiếng Trung", "B. Tôi học thể dục", "C. Tôi học tiếng Anh", "D. Tôi học toán"],
-        correctIndex: 0
+        options: [
+          "A. Tôi học tiếng Trung",
+          "B. Tôi học thể dục",
+          "C. Tôi học tiếng Anh",
+          "D. Tôi học toán",
+        ],
+        correctIndex: 0,
       },
       {
         question: "Q20. 他工作 表达 gì?",
-        options: ["A. Anh ấy ngủ", "B. Anh ấy làm việc", "C. Anh ấy ăn", "D. Anh ấy học"],
-        correctIndex: 1
+        options: [
+          "A. Anh ấy ngủ",
+          "B. Anh ấy làm việc",
+          "C. Anh ấy ăn",
+          "D. Anh ấy học",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q21. 我喜欢你 nghĩa là?",
-        options: ["A. Tôi không biết", "B. Tôi ghét bạn", "C. Tôi thích bạn", "D. Tôi đi học"],
-        correctIndex: 2
+        options: [
+          "A. Tôi không biết",
+          "B. Tôi ghét bạn",
+          "C. Tôi thích bạn",
+          "D. Tôi đi học",
+        ],
+        correctIndex: 2,
       },
       {
         question: "Q22. 我喜欢吃苹果 là gì?",
-        options: ["A. Tôi thích ngủ", "B. Tôi thích ăn táo", "C. Tôi thích học", "D. Tôi thích uống nước"],
-        correctIndex: 1
+        options: [
+          "A. Tôi thích ngủ",
+          "B. Tôi thích ăn táo",
+          "C. Tôi thích học",
+          "D. Tôi thích uống nước",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q23. 我不喜欢咖啡 nghĩa là?",
-        options: ["A. Tôi uống cà phê", "B. Tôi mua cà phê", "C. Tôi thích cà phê", "D. Tôi không thích cà phê"],
-        correctIndex: 3
+        options: [
+          "A. Tôi uống cà phê",
+          "B. Tôi mua cà phê",
+          "C. Tôi thích cà phê",
+          "D. Tôi không thích cà phê",
+        ],
+        correctIndex: 3,
       },
       {
         question: "Q24. 你喜欢什么？ hỏi gì?",
-        options: ["A. Bạn đi đâu", "B. Bạn thích gì", "C. Bạn làm gì", "D. Bạn ăn gì"],
-        correctIndex: 1
+        options: [
+          "A. Bạn đi đâu",
+          "B. Bạn thích gì",
+          "C. Bạn làm gì",
+          "D. Bạn ăn gì",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q25. 你好，我叫小明 nghĩa là?",
-        options: ["A. Tôi ăn cơm", "B. Xin chào, tôi là Tiểu Minh", "C. Tôi uống nước", "D. Tôi đi học"],
-        correctIndex: 1
+        options: [
+          "A. Tôi ăn cơm",
+          "B. Xin chào, tôi là Tiểu Minh",
+          "C. Tôi uống nước",
+          "D. Tôi đi học",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q26. 我是学生，你呢？ nghĩa là?",
-        options: ["A. Tôi là học sinh, còn bạn?", "B. Tôi đi học", "C. Tôi ngủ", "D. Tôi là giáo viên"],
-        correctIndex: 0
+        options: [
+          "A. Tôi là học sinh, còn bạn?",
+          "B. Tôi đi học",
+          "C. Tôi ngủ",
+          "D. Tôi là giáo viên",
+        ],
+        correctIndex: 0,
       },
       {
         question: "Q27. 我在学校 nghĩa là?",
-        options: ["A. Tôi đi chơi", "B. Tôi ăn cơm", "C. Tôi ở trường", "D. Tôi ở nhà"],
-        correctIndex: 2
+        options: [
+          "A. Tôi đi chơi",
+          "B. Tôi ăn cơm",
+          "C. Tôi ở trường",
+          "D. Tôi ở nhà",
+        ],
+        correctIndex: 2,
       },
       {
         question: "Q28. 他是我的朋友 nghĩa là?",
-        options: ["A. Anh ấy là giáo viên", "B. Anh ấy là bạn tôi", "C. Anh ấy là bố tôi", "D. Anh ấy là học sinh"],
-        correctIndex: 1
+        options: [
+          "A. Anh ấy là giáo viên",
+          "B. Anh ấy là bạn tôi",
+          "C. Anh ấy là bố tôi",
+          "D. Anh ấy là học sinh",
+        ],
+        correctIndex: 1,
       },
       {
         question: "Q29. 我们一起学习 nghĩa là?",
-        options: ["A. Chúng tôi ăn", "B. Chúng tôi đi", "C. Chúng tôi học cùng nhau", "D. Chúng tôi ngủ"],
-        correctIndex: 2
+        options: [
+          "A. Chúng tôi ăn",
+          "B. Chúng tôi đi",
+          "C. Chúng tôi học cùng nhau",
+          "D. Chúng tôi ngủ",
+        ],
+        correctIndex: 2,
       },
       {
         question: "Q30. 再见 的意思是什么？",
         options: ["A. Xin lỗi", "B. Cảm ơn", "C. Xin chào", "D. Tạm biệt"],
-        correctIndex: 3
-      }
-    ]
-  }
+        correctIndex: 3,
+      },
+    ],
+  },
 ];
 
 function renderListeningDecks() {
@@ -1494,13 +1568,14 @@ function openListeningPlayer(deck) {
       quizContainer.appendChild(qBlock);
     });
   } else {
-    quizContainer.innerHTML = "<p style='color: var(--text-sub)'>No questions available for this audio.</p>";
+    quizContainer.innerHTML =
+      "<p style='color: var(--text-sub)'>No questions available for this audio.</p>";
   }
 }
 
 function checkListeningAnswer(qBlock, qData, selectedIndex, btn) {
   const allBtns = qBlock.querySelectorAll(".l-option-btn");
-  allBtns.forEach(b => b.disabled = true);
+  allBtns.forEach((b) => (b.disabled = true));
 
   if (selectedIndex === qData.correctIndex) {
     btn.classList.add("correct");
