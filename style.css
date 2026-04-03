@@ -102,6 +102,70 @@ section.active {
   border: 1px solid var(--border);
 }
 
+.decks-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem 0;
+  scrollbar-width: thin;
+}
+.deck-card {
+  min-width: 250px;
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  transition: 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.deck-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+.deck-card.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 10px rgba(9, 132, 227, 0.2);
+}
+.deck-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.deck-count {
+  font-size: 0.9rem;
+  color: var(--text-sub);
+  background: var(--bg-color);
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.pos-select {
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text-main);
+  outline: none;
+}
+
+.practice-modes {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.practice-modes label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .input-group {
   display: flex;
   gap: 10px;
@@ -238,6 +302,12 @@ button {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
+}
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 .stats-bar {
   display: flex;

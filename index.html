@@ -14,6 +14,7 @@
     />
     <!-- SheetJS will be dynamically loaded via script.js -->
   </head>
+
   <body>
     <nav class="navbar">
       <div class="logo">Hanyu<span>Master</span></div>
@@ -42,12 +43,24 @@
               id="chinese-input"
               placeholder="Nhập Hanzi (VD: 学习)"
             />
+            <select id="pos-input" class="pos-select">
+              <option value="none">Từ loại (Auto)</option>
+              <option value="noun">Danh từ</option>
+              <option value="verb">Động từ</option>
+              <option value="pronoun">Đại từ</option>
+              <option value="adj">Tính từ</option>
+            </select>
             <button id="add-btn" class="btn-primary">Thêm</button>
           </div>
 
           <div class="import-tools">
             <p>Thêm file excel vào đây(.xlsx)</p>
-            <input type="file" id="excel-upload" accept=".xlsx, .xls" hidden />
+            <input
+              type="file"
+              id="excel-upload"
+              accept=".xlsx, .xls, .csv"
+              hidden
+            />
             <button
               class="btn-secondary"
               onclick="document.getElementById('excel-upload').click()"
@@ -60,10 +73,30 @@
           </div>
         </div>
 
-        <div class="library-header">
-          <h3>Thư viện (<span id="vocab-count">0</span> từ)</h3>
+        <div class="decks-section">
+          <div class="library-header">
+            <h3>Bộ từ vựng của bạn</h3>
+            <button
+              class="btn-primary btn-sm"
+              style="padding: 6px 12px"
+              onclick="createNewDeck()"
+            >
+              + Bộ mới
+            </button>
+          </div>
+          <div id="decks-list" class="decks-carousel"></div>
+        </div>
+
+        <div class="library-header" style="margin-top: 2rem">
+          <h3>
+            Từ vựng: <span id="current-deck-name">Mặc định</span> (<span
+              id="vocab-count"
+              >0</span
+            >
+            từ)
+          </h3>
           <button class="btn-danger-outline" onclick="resetProgress()">
-            Xoá Từ Vựng
+            Xoá Bộ Này
           </button>
         </div>
         <div id="vocab-list" class="vocab-grid"></div>
@@ -73,6 +106,35 @@
       <section id="flashcard-section">
         <div class="stats-bar">
           <span>Score: <b id="flash-score" class="correct">0</b></span>
+          <div class="practice-modes">
+            <select
+              id="flashcard-deck-select"
+              class="pos-select"
+              style="padding: 5px; font-size: 0.9rem"
+              onchange="loadFlashcard()"
+            >
+              <option value="all">Tất cả các bộ</option>
+            </select>
+            <label
+              ><input
+                type="radio"
+                name="practice-type"
+                value="word"
+                checked
+                onchange="changePracticeType()"
+              />
+              Từ vựng</label
+            >
+            <label
+              ><input
+                type="radio"
+                name="practice-type"
+                value="sentence"
+                onchange="changePracticeType()"
+              />
+              Mẫu câu</label
+            >
+          </div>
           <button class="btn-sm" onclick="toggleFlashMode()">
             <i class="fas fa-sync"></i> Swap Mode
           </button>
@@ -80,6 +142,18 @@
         <div class="card flash-card">
           <div id="flash-mode-label" class="label">
             Dịch sang tiếng Trung Quốc:
+          </div>
+          <div
+            id="sentence-warning"
+            class="hidden"
+            style="
+              color: var(--text-sub);
+              font-size: 0.8rem;
+              margin-top: -10px;
+              margin-bottom: 10px;
+            "
+          >
+            ⚠️ Auto-generated sentence for structure practice
           </div>
           <div id="flash-prompt" class="prompt-text">---</div>
           <div id="flash-feedback" class="feedback"></div>
