@@ -400,88 +400,56 @@ button {
   transform: scale(1.1);
 }
 
-/* BGM PLAYER STYLES */
-.bgm-player {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 250px;
+/* LISTENING QUIZ STYLES */
+.l-question-block {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+}
+.l-question-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.l-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.l-option-btn {
   background: var(--card-bg);
   border: 2px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
-  transition: transform 0.3s ease;
-  overflow: hidden;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.2s;
+  font-size: 1rem;
 }
-.bgm-player.collapsed #bgm-body {
-  display: none;
+.l-option-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: rgba(9, 132, 227, 0.05);
 }
-.bgm-player.collapsed #bgm-minimize-btn i {
-  transform: rotate(180deg);
+.l-option-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+.l-option-btn.correct {
+  border-color: var(--success) !important;
+  background: rgba(0, 184, 148, 0.1) !important;
+  color: var(--success);
+  font-weight: bold;
+}
+.l-option-btn.wrong {
+  border-color: var(--error) !important;
+  background: rgba(214, 48, 49, 0.1) !important;
+  color: var(--error);
+  font-weight: bold;
 }
 
-#bgm-header {
-  padding: 10px;
-  background: var(--primary);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  font-weight: bold;
-}
-#bgm-header .btn-text {
-  color: white;
-  padding: 0 5px;
-}
-.bgm-body {
-  padding: 10px;
-}
-.bgm-controls {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.bgm-volume {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.bgm-volume input[type="range"] {
-  flex: 1;
-  cursor: pointer;
-}
-.bgm-playlist {
-  max-height: 100px;
-  overflow-y: auto;
-  font-size: 0.8rem;
-  margin-bottom: 10px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-}
-.bgm-playlist-item {
-  padding: 5px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.bgm-playlist-item:last-child {
-  border-bottom: none;
-}
-.bgm-playlist-item:hover {
-  background: var(--border);
-}
-.bgm-playlist-item.active {
-  background: rgba(9, 132, 227, 0.1);
-  color: var(--primary);
-  font-weight: bold;
-}
+
 
 @media (max-width: 600px) {
   .options-grid {

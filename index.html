@@ -31,6 +31,9 @@
         <button onclick="showSection('games')">
           <i class="fas fa-gamepad"></i> <span>Games</span>
         </button>
+        <button onclick="showSection('listening')">
+          <i class="fas fa-headphones"></i> <span>Listening</span>
+        </button>
         <button id="theme-toggle"><i class="fas fa-moon"></i></button>
       </div>
     </nav>
@@ -196,7 +199,7 @@
         <div id="game-menu-container" class="card">
           <h2>Mini-Games Hub</h2>
           <p style="margin-bottom: 1.5rem; color: var(--text-sub)">
-            Select a game mode to practice!
+            Chọn 1 minigame để luyện tập từ vựng và phản xạ tiếng Trung của bạn!
           </p>
           <div class="options-grid" style="grid-template-columns: 1fr">
             <button class="option-btn" onclick="openGame('match')">
@@ -362,78 +365,75 @@
           </div>
         </div>
       </section>
-    </main>
 
-    <!-- BGM PLAYER WIDGET -->
-    <div id="bgm-player" class="bgm-player collapsed">
-      <div id="bgm-header" onclick="toggleBGMPlayer()">
-        <span
-          ><i class="fas fa-music"></i>
-          <span
-            id="bgm-current-title"
-            style="font-size: 0.9rem; margin-left: 5px"
-            >No Music</span
-          ></span
-        >
-        <button id="bgm-minimize-btn" class="btn-text">
-          <i class="fas fa-chevron-up"></i>
-        </button>
-      </div>
-      <div id="bgm-body" class="bgm-body">
-        <div class="bgm-controls">
-          <button class="btn-text" onclick="prevBGMTrack()">
-            <i class="fas fa-step-backward"></i>
-          </button>
-          <button id="bgm-play-btn" class="btn-text" onclick="toggleBGMPlay()">
-            <i class="fas fa-play" style="font-size: 1.2rem"></i>
-          </button>
-          <button class="btn-text" onclick="nextBGMTrack()">
-            <i class="fas fa-step-forward"></i>
-          </button>
-        </div>
-        <div class="bgm-volume">
-          <i
-            class="fas fa-volume-down"
-            style="font-size: 0.8rem; margin-right: 5px"
-          ></i>
-          <input
-            type="range"
-            id="bgm-volume-slider"
-            min="0"
-            max="1"
-            step="0.05"
-            value="0.5"
-            oninput="changeBGMVolume(this.value)"
-          />
-          <i
-            class="fas fa-volume-up"
-            style="font-size: 0.8rem; margin-left: 5px"
-          ></i>
-        </div>
-
-        <div id="bgm-playlist" class="bgm-playlist">
-          <!-- Playlist items injected here -->
-        </div>
-
-        <div class="bgm-footer">
-          <input
-            type="file"
-            id="bgm-upload"
-            multiple
-            accept="audio/*"
-            hidden
-            onchange="addBGMMusic(event)"
-          />
-          <button
-            class="btn-sm btn-primary"
-            onclick="document.getElementById('bgm-upload').click()"
-            style="width: 100%; font-size: 0.8rem"
+      <!-- LISTENING SECTION -->
+      <section id="listening-section">
+        <!-- Hub Menu -->
+        <div id="listening-menu-container" class="card">
+          <h2>Listening Practice</h2>
+          <p style="margin-bottom: 1.5rem; color: var(--text-sub)">
+            Chọn bài nghe để luyện tập
+          </p>
+          <div
+            id="listening-decks-list"
+            class="options-grid"
+            style="grid-template-columns: 1fr"
           >
-            <i class="fas fa-plus"></i> Add Local Music
-          </button>
+            <!-- Injected via JS -->
+          </div>
         </div>
-      </div>
-    </div>
+
+        <!-- Player View -->
+        <div id="listening-player-container" class="hidden">
+          <div class="stats-bar">
+            <button class="btn-sm" onclick="backToListeningMenu()">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <span
+              style="font-size: 1.2rem; font-weight: bold"
+              id="listening-title-display"
+              >Title</span
+            >
+            <span style="width: 50px"></span
+            ><!-- spacer -->
+          </div>
+          <div
+            class="card"
+            style="
+              padding: 1rem;
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+            "
+          >
+            <!-- Audio player -->
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 1rem 0;
+                background: var(--bg-color);
+                border-radius: 8px;
+              "
+            >
+              <audio
+                id="listening-audio-player"
+                controls
+                style="width: 90%; max-width: 400px"
+              >
+                <source id="listening-audio-source" src="" type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+            <!-- Quiz Container -->
+            <div id="listening-quiz-container" style="display:flex; flex-direction:column; gap:20px; overflow-y:auto; max-height:600px; padding-right:10px;">
+              <!-- Questions injected via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <script src="script.js"></script>
   </body>
