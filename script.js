@@ -21,6 +21,21 @@ let matchCards = [];
 let matchFlipped = [];
 let matchMatches = 0;
 
+let speedTimerInterval = null;
+let speedTimeRemaining = 5;
+let speedCombo = 0;
+let speedScore = 0;
+let speedMistakes = 0;
+let speedCurrentItem = null;
+
+// Sniper Mode States
+let sniperSpawners = [];
+let sniperSpeed = 6000;
+let sniperLives = 5;
+let sniperScore = 0;
+let sniperLevel = 1;
+let sniperTargetItem = null;
+
 /**
  * INITIALIZATION
  */
@@ -656,7 +671,7 @@ function showSection(id) {
   document.getElementById(`${id}-section`).classList.add("active");
   if (id === "flashcard") loadFlashcard();
   if (id === "quiz") loadQuiz();
-  if (id === "games") startMatchingGame();
+  if (id === "games") backToGameMenu();
 }
 
 function toggleFlashMode() {
@@ -772,5 +787,217 @@ function handleMatchCardClick(el, index, card) {
       }, 1000);
     }
   }
+}
+
+/**
+ * GAMES HUB & SPEED QUIZ / SNIPER LOGIC
+ */
+function backToGameMenu() {
+  document.getElementById("game-menu-container").classList.remove("hidden");
+  document.getElementById("game-match-container").classList.add("hidden");
+  document.getElementById("game-speed-container").classList.add("hidden");
+  document.getElementById("game-sniper-container").classList.add("hidden");
+  
+  clearInterval(speedTimerInterval);
+  sniperSpawners.forEach(s => clearInterval(s));
+  sniperSpawners = [];
+  document.getElementById("speed-quiz-card")?.classList.remove("danger-alert");
+}
+
+function openGame(gameId) {
+  document.getElementById("game-menu-container").classList.add("hidden");
+  
+  if (gameId === 'match') {
+    document.getElementById("game-match-container").classList.remove("hidden");
+    matchLevel = 1;
+    startMatchingGame();
+  } else if (gameId === 'speed') {
+    document.getElementById("game-speed-container").classList.remove("hidden");
+    speedCombo = 0;
+    speedScore = 0;
+    speedMistakes = 0;
+    document.getElementById("speed-game-over").style.display = "none";
+    startSpeedQuiz();
+  } else if (gameId === 'sniper') {
+    document.getElementById("game-sniper-container").classList.remove("hidden");
+    sniperSpeed = 6000;
+    sniperLives = 5;
+    sniperScore = 0;
+    sniperLevel = 1;
+    document.getElementById("sniper-game-over").style.display = "none";
+    startSniperMode();
+  }
+}
+
+function startSpeedQuiz() {
+  if (vocabulary.length < 4) { alert("Add at least 4 words!"); return backToGameMenu(); }
+  
+  speedTimeRemaining = 5.0;
+  speedCurrentItem = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+  document.getElementById("speed-question").innerText = speedCurrentItem.vi;
+  document.getElementById("speed-score").innerText = speedScore;
+  document.getElementById("speed-combo").innerText = speedCombo;
+  
+  const optionsContainer = document.getElementById("speed-options");
+  optionsContainer.innerHTML = '';
+  
+  let options = [speedCurrentItem.zh];
+  while (options.length < 4) {
+    let rand = vocabulary[Math.floor(Math.random() * vocabulary.length)].zh;
+    if (!options.includes(rand)) options.push(rand);
+  }
+  options.sort(() => Math.random() - 0.5);
+  
+  options.forEach(opt => {
+    let btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.innerText = opt;
+    btn.onclick = () => {
+      clearInterval(speedTimerInterval);
+      if (opt === speedCurrentItem.zh) {
+        speedCombo++;
+        speedScore += 10 * speedCombo;
+        btn.style.backgroundColor = "var(--success)";
+        btn.style.border = "2px solid var(--success)";
+        btn.style.color = "white";
+        speak(speedCurrentItem.zh);
+        setTimeout(startSpeedQuiz, 600);
+      } else {
+        speedCombo = 0;
+        speedMistakes++;
+        btn.style.backgroundColor = "var(--error)";
+        btn.style.color = "white";
+        Array.from(optionsContainer.children).forEach(c => {
+          if (c.innerText === speedCurrentItem.zh) {
+            c.style.backgroundColor = "var(--success)";
+            c.style.color = "white";
+          }
+        });
+        
+        if (speedMistakes >= 5) {
+          setTimeout(endSpeedQuiz, 600);
+        } else {
+          setTimeout(startSpeedQuiz, 600);
+        }
+      }
+    };
+    optionsContainer.appendChild(btn);
+  });
+  
+  document.getElementById("speed-quiz-card").classList.remove("danger-alert");
+  clearInterval(speedTimerInterval);
+  speedTimerInterval = setInterval(() => {
+    speedTimeRemaining -= 0.05;
+    const disp = document.getElementById("speed-timer-display");
+    if (speedTimeRemaining <= 0) {
+      speedTimeRemaining = 0;
+      clearInterval(speedTimerInterval);
+      speedCombo = 0;
+      speedMistakes++;
+      disp.innerText = "00.00s";
+      
+      if (speedMistakes >= 5) {
+         endSpeedQuiz();
+      } else {
+         startSpeedQuiz();
+      }
+      return;
+    }
+    
+    if (speedTimeRemaining <= 2.0 && !document.getElementById("speed-quiz-card").classList.contains("danger-alert")) {
+      document.getElementById("speed-quiz-card").classList.add("danger-alert");
+    }
+    disp.innerText = (speedTimeRemaining < 10 ? "0" : "") + speedTimeRemaining.toFixed(2) + "s";
+  }, 50);
+}
+
+function endSpeedQuiz() {
+  document.getElementById("speed-game-over").style.display = "flex";
+}
+
+function startSniperMode() {
+  if (vocabulary.length < 4) { alert("Add at least 4 words!"); return backToGameMenu(); }
+  document.getElementById("sniper-game-over").style.display = "none";
+  
+  sniperSpawners.forEach(s => clearInterval(s));
+  sniperSpawners = [];
+  document.getElementById("sniper-canvas").innerHTML = '';
+  
+  updateSniperStats();
+  sniperTargetItem = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+  document.getElementById("sniper-target-word").innerText = sniperTargetItem.vi;
+  
+  let spawnInterval = Math.max(800, 2000 - (sniperLevel * 100));
+  let sId = setInterval(spawnFlyingWord, spawnInterval);
+  sniperSpawners.push(sId);
+}
+
+function spawnFlyingWord() {
+  const canvas = document.getElementById("sniper-canvas");
+  if (!canvas) return;
+  
+  let isTarget = Math.random() < 0.35;
+  let wordObj = isTarget ? sniperTargetItem : vocabulary[Math.floor(Math.random() * vocabulary.length)];
+  
+  const el = document.createElement("div");
+  el.className = "flying-word";
+  el.innerText = wordObj.zh;
+  
+  const startY = Math.random() * 85; 
+  el.style.top = `${startY}%`;
+  
+  const fromLeft = Math.random() > 0.5;
+  if(fromLeft) el.style.left = "-150px";
+  else el.style.right = "-150px";
+  
+  el.onclick = () => {
+    if (wordObj.zh === sniperTargetItem.zh) {
+      sniperScore += 10 * sniperLevel;
+      el.remove();
+      speak(wordObj.zh);
+      if (sniperScore % 50 === 0) {
+        sniperSpeed = Math.max(1500, sniperSpeed - 600);
+        sniperLevel++;
+      }
+      startSniperMode();
+    } else {
+      sniperLives--;
+      updateSniperStats();
+      el.style.backgroundColor = "var(--error)";
+      el.style.color = "white";
+      el.style.pointerEvents = "none";
+      if (sniperLives <= 0) endSniperMode();
+    }
+  };
+  
+  canvas.appendChild(el);
+  
+  let start = Date.now();
+  let flyTimer = setInterval(() => {
+    let elapsed = Date.now() - start;
+    let progress = elapsed / sniperSpeed;
+    if (progress >= 1) {
+      clearInterval(flyTimer);
+      el.remove();
+    } else {
+      let percent = progress * 120;
+      if (fromLeft) el.style.left = `calc(${percent}% - 150px)`;
+      else el.style.right = `calc(${percent}% - 150px)`;
+    }
+  }, 16); 
+}
+
+function updateSniperStats() {
+  document.getElementById("sniper-score").innerText = sniperScore;
+  document.getElementById("sniper-lives").innerText = (5 - sniperLives);
+}
+
+function endSniperMode() {
+  sniperSpawners.forEach(s => clearInterval(s));
+  sniperSpawners = [];
+  document.getElementById("sniper-game-over").style.display = "flex";
+  document.querySelectorAll(".flying-word").forEach(el => {
+    el.style.pointerEvents = "none";
+  });
 }
 

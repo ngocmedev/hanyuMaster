@@ -192,13 +192,170 @@
       </section>
       <!-- GAMES SECTION -->
       <section id="games-section">
-        <div class="stats-bar">
-          <span style="font-size:1.2rem; font-weight:bold;">Level: <b id="match-level" class="correct">1</b></span>
-          <button class="btn-sm" onclick="startMatchingGame()"><i class="fas fa-sync"></i> Restart / Skip</button>
+        <!-- GAMES HUB MENU -->
+        <div id="game-menu-container" class="card">
+          <h2>Mini-Games Hub</h2>
+          <p style="margin-bottom: 1.5rem; color: var(--text-sub)">
+            Select a game mode to practice!
+          </p>
+          <div class="options-grid" style="grid-template-columns: 1fr">
+            <button class="option-btn" onclick="openGame('match')">
+              <i class="fas fa-th"></i> Memory Match (Classic)
+            </button>
+            <button class="option-btn" onclick="openGame('speed')">
+              <i class="fas fa-bolt"></i> Speed Quiz (5s Time Limit)
+            </button>
+            <button class="option-btn" onclick="openGame('sniper')">
+              <i class="fas fa-crosshairs"></i> Sniper Mode (Target Practice)
+            </button>
+          </div>
         </div>
-        <div class="card quiz-card" style="padding: 1rem;">
-          <div class="label" style="margin-bottom: 1rem;">Tìm cặp từ tương ứng (Trung - Việt)</div>
-          <div id="match-grid" class="match-grid"></div>
+
+        <!-- MATCHING GAME -->
+        <div id="game-match-container" class="hidden">
+          <div class="stats-bar">
+            <button class="btn-sm" onclick="backToGameMenu()">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <span style="font-size: 1.2rem; font-weight: bold"
+              >Level: <b id="match-level" class="correct">1</b></span
+            >
+            <button class="btn-sm" onclick="startMatchingGame()">
+              <i class="fas fa-sync"></i> Restart
+            </button>
+          </div>
+          <div class="card quiz-card" style="padding: 1rem">
+            <div class="label" style="margin-bottom: 1rem">
+              Tìm cặp từ tương ứng (Trung - Việt)
+            </div>
+            <div id="match-grid" class="match-grid"></div>
+          </div>
+        </div>
+
+        <!-- SPEED QUIZ -->
+        <div id="game-speed-container" class="hidden">
+          <div class="stats-bar">
+            <button class="btn-sm" onclick="backToGameMenu()">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <span style="font-size: 1.2rem; font-weight: bold"
+              >Combo: <b id="speed-combo" class="correct">0</b>x</span
+            >
+            <span style="font-size: 1.2rem; font-weight: bold"
+              >Score: <b id="speed-score" class="correct">0</b></span
+            >
+          </div>
+          <div id="speed-quiz-card" class="card quiz-card" style="position: relative; overflow: hidden; min-height: 250px;">
+            <div
+              style="
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin-bottom: 1rem;
+                color: var(--error);
+              "
+              id="speed-timer-display"
+            >
+              05.00s
+            </div>
+            <div class="label">Nghĩa của từ:</div>
+            <div id="speed-question" class="prompt-text">---</div>
+            <div id="speed-options" class="options-grid"></div>
+            
+            <div
+              id="speed-game-over"
+              class="hidden"
+              style="
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.8);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+              "
+            >
+              <h2 style="color: white; font-size: 2rem; margin-bottom: 1rem">
+                Game Over!
+              </h2>
+              <button class="btn-primary" onclick="openGame('speed')">
+                <i class="fas fa-sync"></i> Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SNIPER MODE -->
+        <div id="game-sniper-container" class="hidden">
+          <div class="stats-bar">
+            <button class="btn-sm" onclick="backToGameMenu()">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <span style="font-size: 1.2rem; font-weight: bold"
+              >Score: <b id="sniper-score" class="correct">0</b></span
+            >
+            <span
+              style="font-size: 1.2rem; font-weight: bold; color: var(--error)"
+              >Wrong: <b id="sniper-lives">0</b>/5</span
+            >
+          </div>
+          <div
+            class="card"
+            style="
+              padding: 1rem;
+              position: relative;
+              overflow: hidden;
+              min-height: 400px;
+              display: flex;
+              flex-direction: column;
+            "
+            id="sniper-canvas-wrapper"
+          >
+            <div
+              style="
+                text-align: center;
+                font-size: 2rem;
+                font-weight: bold;
+                color: var(--primary);
+                margin-bottom: 1rem;
+                padding-bottom: 10px;
+                border-bottom: 2px solid var(--border);
+              "
+              id="sniper-target-word"
+            >
+              ---
+            </div>
+            <div
+              id="sniper-canvas"
+              style="
+                flex: 1;
+                position: relative;
+                overflow: hidden;
+                min-height: 300px;
+              "
+            >
+              <!-- Words will be injected here -->
+            </div>
+            <div
+              id="sniper-game-over"
+              class="hidden"
+              style="
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.8);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+              "
+            >
+              <h2 style="color: white; font-size: 2rem; margin-bottom: 1rem">
+                Game Over!
+              </h2>
+              <button class="btn-primary" onclick="startSniperMode()">
+                <i class="fas fa-sync"></i> Play Again
+              </button>
+            </div>
+          </div>
         </div>
       </section>
     </main>

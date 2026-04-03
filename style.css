@@ -361,6 +361,45 @@ button {
   opacity: 0.8;
 }
 
+/* GAME ALERT SHAKE */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.danger-alert {
+  animation: shake 0.5s infinite;
+  background-color: rgba(214, 48, 49, 0.1) !important;
+  border-color: var(--error) !important;
+}
+
+/* SNIPER MODE STYLES */
+.flying-word {
+  position: absolute;
+  padding: 10px 20px;
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: transform 0.1s, border-color 0.2s, background-color 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  /* Movement is done via linear translation in JS (or CSS depending on implementation) */
+}
+
+.flying-word:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+  transform: scale(1.1);
+}
+
 @media (max-width: 600px) {
   .options-grid {
     grid-template-columns: 1fr;
