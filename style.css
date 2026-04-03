@@ -400,6 +400,89 @@ button {
   transform: scale(1.1);
 }
 
+/* BGM PLAYER STYLES */
+.bgm-player {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 250px;
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+.bgm-player.collapsed #bgm-body {
+  display: none;
+}
+.bgm-player.collapsed #bgm-minimize-btn i {
+  transform: rotate(180deg);
+}
+
+#bgm-header {
+  padding: 10px;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+}
+#bgm-header .btn-text {
+  color: white;
+  padding: 0 5px;
+}
+.bgm-body {
+  padding: 10px;
+}
+.bgm-controls {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.bgm-volume {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.bgm-volume input[type="range"] {
+  flex: 1;
+  cursor: pointer;
+}
+.bgm-playlist {
+  max-height: 100px;
+  overflow-y: auto;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.bgm-playlist-item {
+  padding: 5px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bgm-playlist-item:last-child {
+  border-bottom: none;
+}
+.bgm-playlist-item:hover {
+  background: var(--border);
+}
+.bgm-playlist-item.active {
+  background: rgba(9, 132, 227, 0.1);
+  color: var(--primary);
+  font-weight: bold;
+}
+
 @media (max-width: 600px) {
   .options-grid {
     grid-template-columns: 1fr;

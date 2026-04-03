@@ -1001,3 +1001,110 @@ function endSniperMode() {
   });
 }
 
+/**
+ * BACKGROUND MUSIC LOGIC
+ */
+const bgmAudio = new Audio();
+let bgmPlaylist = [];
+let bgmCurrentIndex = 0;
+
+bgmAudio.volume = 0.5;
+
+bgmAudio.addEventListener('ended', () => {
+    nextBGMTrack();
+});
+
+function toggleBGMPlayer() {
+    document.getElementById("bgm-player").classList.toggle("collapsed");
+}
+
+function addBGMMusic(event) {
+    const files = event.target.files;
+    if (files.length === 0) return;
+    
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type.startsWith('audio/')) {
+            const url = URL.createObjectURL(file);
+            bgmPlaylist.push({ name: file.name, url: url });
+        }
+    }
+    
+    updateBGMPlaylistUI();
+    
+    // If it's the first song being added, start playing
+    if (bgmPlaylist.length > 0 && bgmAudio.paused && !bgmAudio.src) {
+        playBGMTrack(0);
+    }
+    
+    // Reset file input so you can add the same file path again if you really wanted to
+    event.target.value = "";
+}
+
+function playBGMTrack(index) {
+    if (bgmPlaylist.length === 0 || index >= bgmPlaylist.length) return;
+    bgmCurrentIndex = index;
+    const track = bgmPlaylist[index];
+    bgmAudio.src = track.url;
+    bgmAudio.play();
+    
+    document.getElementById("bgm-current-title").innerText = track.name;
+    const playBtnIcon = document.querySelector("#bgm-play-btn i");
+    if(playBtnIcon) playBtnIcon.className = "fas fa-pause";
+    
+    updateBGMPlaylistUI();
+}
+
+function toggleBGMPlay() {
+    if (bgmPlaylist.length === 0) return;
+    
+    const playBtnIcon = document.querySelector("#bgm-play-btn i");
+    if (bgmAudio.paused) {
+        if (!bgmAudio.src) {
+            playBGMTrack(bgmCurrentIndex);
+        } else {
+            bgmAudio.play();
+            if(playBtnIcon) playBtnIcon.className = "fas fa-pause";
+        }
+    } else {
+        bgmAudio.pause();
+        if(playBtnIcon) playBtnIcon.className = "fas fa-play";
+    }
+}
+
+function nextBGMTrack() {
+    if (bgmPlaylist.length === 0) return;
+    let nextIndex = bgmCurrentIndex + 1;
+    if (nextIndex >= bgmPlaylist.length) {
+        nextIndex = 0; // Loop playlist
+    }
+    playBGMTrack(nextIndex);
+}
+
+function prevBGMTrack() {
+    if (bgmPlaylist.length === 0) return;
+    let prevIndex = bgmCurrentIndex - 1;
+    if (prevIndex < 0) {
+        prevIndex = bgmPlaylist.length - 1; // Loop backwards
+    }
+    playBGMTrack(prevIndex);
+}
+
+function changeBGMVolume(val) {
+    bgmAudio.volume = parseFloat(val);
+}
+
+function updateBGMPlaylistUI() {
+    const container = document.getElementById("bgm-playlist");
+    if(!container) return;
+    container.innerHTML = "";
+    
+    bgmPlaylist.forEach((track, index) => {
+        const item = document.createElement("div");
+        item.className = "bgm-playlist-item" + (index === bgmCurrentIndex ? " active" : "");
+        item.innerText = (index + 1) + ". " + track.name;
+        item.onclick = () => playBGMTrack(index);
+        container.appendChild(item);
+    });
+}
+

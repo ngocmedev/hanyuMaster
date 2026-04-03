@@ -245,7 +245,11 @@
               >Score: <b id="speed-score" class="correct">0</b></span
             >
           </div>
-          <div id="speed-quiz-card" class="card quiz-card" style="position: relative; overflow: hidden; min-height: 250px;">
+          <div
+            id="speed-quiz-card"
+            class="card quiz-card"
+            style="position: relative; overflow: hidden; min-height: 250px"
+          >
             <div
               style="
                 font-size: 1.5rem;
@@ -260,7 +264,7 @@
             <div class="label">Nghĩa của từ:</div>
             <div id="speed-question" class="prompt-text">---</div>
             <div id="speed-options" class="options-grid"></div>
-            
+
             <div
               id="speed-game-over"
               class="hidden"
@@ -359,6 +363,77 @@
         </div>
       </section>
     </main>
+
+    <!-- BGM PLAYER WIDGET -->
+    <div id="bgm-player" class="bgm-player collapsed">
+      <div id="bgm-header" onclick="toggleBGMPlayer()">
+        <span
+          ><i class="fas fa-music"></i>
+          <span
+            id="bgm-current-title"
+            style="font-size: 0.9rem; margin-left: 5px"
+            >No Music</span
+          ></span
+        >
+        <button id="bgm-minimize-btn" class="btn-text">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+      </div>
+      <div id="bgm-body" class="bgm-body">
+        <div class="bgm-controls">
+          <button class="btn-text" onclick="prevBGMTrack()">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button id="bgm-play-btn" class="btn-text" onclick="toggleBGMPlay()">
+            <i class="fas fa-play" style="font-size: 1.2rem"></i>
+          </button>
+          <button class="btn-text" onclick="nextBGMTrack()">
+            <i class="fas fa-step-forward"></i>
+          </button>
+        </div>
+        <div class="bgm-volume">
+          <i
+            class="fas fa-volume-down"
+            style="font-size: 0.8rem; margin-right: 5px"
+          ></i>
+          <input
+            type="range"
+            id="bgm-volume-slider"
+            min="0"
+            max="1"
+            step="0.05"
+            value="0.5"
+            oninput="changeBGMVolume(this.value)"
+          />
+          <i
+            class="fas fa-volume-up"
+            style="font-size: 0.8rem; margin-left: 5px"
+          ></i>
+        </div>
+
+        <div id="bgm-playlist" class="bgm-playlist">
+          <!-- Playlist items injected here -->
+        </div>
+
+        <div class="bgm-footer">
+          <input
+            type="file"
+            id="bgm-upload"
+            multiple
+            accept="audio/*"
+            hidden
+            onchange="addBGMMusic(event)"
+          />
+          <button
+            class="btn-sm btn-primary"
+            onclick="document.getElementById('bgm-upload').click()"
+            style="width: 100%; font-size: 0.8rem"
+          >
+            <i class="fas fa-plus"></i> Add Local Music
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="script.js"></script>
   </body>
