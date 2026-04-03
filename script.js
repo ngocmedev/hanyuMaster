@@ -16,6 +16,10 @@ let currentSentence = null;
 let practiceType = "word"; // word or sentence
 let flashMode = "vi-zh"; // Vietnamese -> Chinese
 let scores = { flash: 0, quiz: 0 };
+let matchLevel = 1;
+let matchCards = [];
+let matchFlipped = [];
+let matchMatches = 0;
 
 /**
  * INITIALIZATION
@@ -623,9 +627,14 @@ function updateVocabUI() {
     let posLabel = "";
     if (v.pos && v.pos !== "none") posLabel = `<span style="font-size:0.7rem; background: var(--border); padding: 2px 5px; border-radius: 4px; margin-left: 5px;">${v.pos}</span>`;
 
+    const safeZh = v.zh.replace(/'/g, "\\'");
     div.innerHTML = `
             <button class="delete-btn" onclick="deleteWord(${v.id})"><i class="fas fa-times"></i></button>
-            <div style="font-weight: bold; font-size: 1.2rem">${v.zh} ${posLabel}</div>
+            <div style="font-weight: bold; font-size: 1.2rem">
+                ${v.zh} 
+                <button class="btn-text" style="font-size:1rem; padding:0 5px; cursor:pointer;" onclick="speak('${safeZh}')" title="Pronounce word"><i class="fas fa-volume-up"></i></button>
+                ${posLabel}
+            </div>
             <div style="color: var(--primary); font-size: 0.8rem">${v.py}</div>
             <div style="font-size: 0.9rem">${v.vi}</div>
         `;
@@ -647,6 +656,7 @@ function showSection(id) {
   document.getElementById(`${id}-section`).classList.add("active");
   if (id === "flashcard") loadFlashcard();
   if (id === "quiz") loadQuiz();
+  if (id === "games") startMatchingGame();
 }
 
 function toggleFlashMode() {
@@ -687,3 +697,80 @@ function initTheme() {
   document.querySelector("#theme-toggle i").className =
     saved === "dark" ? "fas fa-sun" : "fas fa-moon";
 }
+
+/**
+ * MATCHING GAME LOGIC
+ */
+function startMatchingGame() {
+  if (vocabulary.length < 4) return alert("Add at least 4 words to play!");
+  
+  matchCards = [];
+  matchFlipped = [];
+  matchMatches = 0;
+  
+  const basePairs = 4;
+  const targetPairs = Math.min(basePairs + (matchLevel * 2), vocabulary.length, 12);
+  
+  const shuffledVocab = [...vocabulary].sort(() => Math.random() - 0.5);
+  const selectedWords = shuffledVocab.slice(0, targetPairs);
+  
+  selectedWords.forEach(word => {
+    matchCards.push({ text: word.zh, matchId: word.id, lang: 'zh', py: word.py });
+    matchCards.push({ text: word.vi, matchId: word.id, lang: 'vi' });
+  });
+  
+  matchCards.sort(() => Math.random() - 0.5);
+  
+  document.getElementById("match-level").innerText = matchLevel;
+  const grid = document.getElementById("match-grid");
+  grid.innerHTML = "";
+  
+  matchCards.forEach((card, index) => {
+    const el = document.createElement("div");
+    el.className = "match-card";
+    el.innerText = card.text;
+    el.onclick = () => handleMatchCardClick(el, index, card);
+    grid.appendChild(el);
+  });
+}
+
+function handleMatchCardClick(el, index, card) {
+  if (el.classList.contains("matched") || el.classList.contains("flipped") || matchFlipped.length >= 2) return;
+  
+  el.classList.add("flipped");
+  matchFlipped.push({ el, card });
+  
+  if (card.lang === 'zh') {
+    speak(card.text);
+  }
+  
+  if (matchFlipped.length === 2) {
+    const [first, second] = matchFlipped;
+    
+    if (first.card.matchId === second.card.matchId && first.card.lang !== second.card.lang) {
+      setTimeout(() => {
+        first.el.classList.remove("flipped");
+        second.el.classList.remove("flipped");
+        first.el.classList.add("matched");
+        second.el.classList.add("matched");
+        matchMatches++;
+        matchFlipped = [];
+        
+        if (matchMatches === matchCards.length / 2) {
+          setTimeout(() => {
+            alert(`Level ${matchLevel} Complete! Moving to next level.`);
+            matchLevel++;
+            startMatchingGame();
+          }, 400);
+        }
+      }, 500);
+    } else {
+      setTimeout(() => {
+        first.el.classList.remove("flipped");
+        second.el.classList.remove("flipped");
+        matchFlipped = [];
+      }, 1000);
+    }
+  }
+}
+

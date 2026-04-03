@@ -319,9 +319,54 @@ button {
   display: none;
 }
 
+/* MATCHING GAME STYLES */
+.match-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+.match-card {
+  padding: 18px;
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  text-align: center;
+  user-select: none;
+  transition: 0.2s all;
+}
+.match-card:hover:not(.flipped):not(.matched) {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+.match-card.flipped {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+.match-card.matched {
+  background: rgba(0, 184, 148, 0.1);
+  color: var(--success);
+  border-color: var(--success);
+  cursor: default;
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
 @media (max-width: 600px) {
   .options-grid {
     grid-template-columns: 1fr;
+  }
+  .match-grid {
+    grid-template-columns: repeat(3, 1fr); /* Slightly smaller grid on mobile */
   }
   .nav-links span {
     display: none;

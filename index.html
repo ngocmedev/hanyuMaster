@@ -28,6 +28,9 @@
         <button onclick="showSection('quiz')">
           <i class="fas fa-tasks"></i> <span>Quiz</span>
         </button>
+        <button onclick="showSection('games')">
+          <i class="fas fa-gamepad"></i> <span>Games</span>
+        </button>
         <button id="theme-toggle"><i class="fas fa-moon"></i></button>
       </div>
     </nav>
@@ -185,6 +188,17 @@
           <button id="quiz-next" class="btn-primary hidden">
             Next Question
           </button>
+        </div>
+      </section>
+      <!-- GAMES SECTION -->
+      <section id="games-section">
+        <div class="stats-bar">
+          <span style="font-size:1.2rem; font-weight:bold;">Level: <b id="match-level" class="correct">1</b></span>
+          <button class="btn-sm" onclick="startMatchingGame()"><i class="fas fa-sync"></i> Restart / Skip</button>
+        </div>
+        <div class="card quiz-card" style="padding: 1rem;">
+          <div class="label" style="margin-bottom: 1rem;">Tìm cặp từ tương ứng (Trung - Việt)</div>
+          <div id="match-grid" class="match-grid"></div>
         </div>
       </section>
     </main>
