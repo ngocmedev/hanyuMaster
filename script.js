@@ -989,11 +989,24 @@ function backToGameMenu() {
   document.getElementById("game-match-container").classList.add("hidden");
   document.getElementById("game-speed-container").classList.add("hidden");
   document.getElementById("game-sniper-container").classList.add("hidden");
+  document.getElementById("game-shuffle-container").classList.add("hidden");
 
   clearInterval(speedTimerInterval);
   sniperSpawners.forEach((s) => clearInterval(s));
   sniperSpawners = [];
   document.getElementById("speed-quiz-card")?.classList.remove("danger-alert");
+  if (typeof resetShuffleProgress === "function") {
+    resetShuffleProgress();
+  }
+}
+
+function resetShuffleProgress() {
+  shufflePatterns = [];
+  shuffleCurrentPatternIndex = 0;
+  shuffleSelectedWords = [];
+  shuffleBankWords = [];
+  const decksView = document.getElementById("shuffle-decks-view");
+  if (decksView) decksView.classList.add("hidden");
 }
 
 function openGame(gameId) {
@@ -1018,6 +1031,9 @@ function openGame(gameId) {
     sniperLevel = 1;
     document.getElementById("sniper-game-over").style.display = "none";
     startSniperMode();
+  } else if (gameId === "shuffle") {
+    document.getElementById("game-shuffle-container").classList.remove("hidden");
+    startShuffleGame();
   }
 }
 
@@ -1594,3 +1610,239 @@ function backToListeningMenu() {
     .getElementById("listening-menu-container")
     .classList.remove("hidden");
 }
+
+/**
+ * SHUFFLE GAME LOGIC
+ */
+let shufflePatterns = [];
+let shuffleCurrentPatternIndex = 0;
+let shuffleScore = 0;
+let shuffleSelectedWords = [];
+let shuffleBankWords = [];
+let shuffleCorrectSentence = "";
+
+async function startShuffleGame() {
+  document.getElementById("shuffle-progress").innerText = "0/0";
+  document.getElementById("shuffle-score").innerText = "0";
+  document.getElementById("shuffle-loading").classList.remove("hidden");
+  document.getElementById("shuffle-game-area").classList.add("hidden");
+  document.getElementById("shuffle-decks-view").classList.add("hidden");
+  
+  try {
+    const response = await fetch('./api/get_decks.php');
+    if (!response.ok) throw new Error("API Network error");
+    const json = await response.json();
+    if (json.success && json.data.length > 0) {
+      renderShuffleDecks(json.data);
+    } else {
+      alert("Chưa có chủ đề mẫu câu trong cơ sở dữ liệu. Vui lòng chạy http://localhost/.../api/init_db.php");
+      backToGameMenu();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi khi tải dữ liệu chủ đề. Vui lòng kiểm tra API hoặc CSDL.");
+    backToGameMenu();
+  }
+}
+
+function renderShuffleDecks(decks) {
+  document.getElementById("shuffle-loading").classList.add("hidden");
+  document.getElementById("shuffle-decks-view").classList.remove("hidden");
+  
+  const grid = document.getElementById("shuffle-decks-grid");
+  grid.innerHTML = "";
+  
+  decks.forEach(deck => {
+    const card = document.createElement("div");
+    card.className = "shuffle-deck-card";
+    card.onclick = () => selectShuffleDeck(deck.deck_name);
+    
+    card.innerHTML = `
+      <div class="shuffle-deck-title" style="margin-bottom: 12px; font-weight: bold; font-size: 1.05rem;">
+        <span style="color: #2c3e50;">${deck.deck_name}</span>
+        <span class="shuffle-deck-count" style="color: #0984e3; font-weight: normal; font-size: 0.9rem;">(${deck.word_count} từ)</span>
+      </div>
+      <div class="shuffle-deck-subtitle" style="color: #a4b0be; font-size: 0.85rem;">Các từ vựng trong chủ đề ${deck.deck_name}</div>
+    `;
+    
+    grid.appendChild(card);
+  });
+}
+
+async function selectShuffleDeck(deckName) {
+  document.getElementById("shuffle-decks-view").classList.add("hidden");
+  document.getElementById("shuffle-loading").classList.remove("hidden");
+  
+  shufflePatterns = [];
+  shuffleCurrentPatternIndex = 0;
+  shuffleScore = 0;
+  
+  try {
+    const response = await fetch(`./api/get_patterns.php?deck=${encodeURIComponent(deckName)}`);
+    if (!response.ok) throw new Error("API Network error");
+    const json = await response.json();
+    if (json.success && json.data.length > 0) {
+      shufflePatterns = json.data;
+      loadShufflePattern();
+    } else {
+      alert("Không tìm thấy mẫu câu trong chủ đề này.");
+      startShuffleGame();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi khi tải dữ liệu mẫu câu.");
+    startShuffleGame();
+  }
+}
+
+function loadShufflePattern() {
+  document.getElementById("shuffle-loading").classList.add("hidden");
+  document.getElementById("shuffle-game-area").classList.remove("hidden");
+  
+  if (shuffleCurrentPatternIndex >= shufflePatterns.length) {
+    alert("Chúc mừng! Bạn đã hoàn thành tất cả các câu hỏi trong chủ đề này.");
+    startShuffleGame(); // Return to decks view
+    return;
+  }
+  
+  document.getElementById("shuffle-progress").innerText = `${shuffleCurrentPatternIndex + 1}/${shufflePatterns.length}`;
+  document.getElementById("shuffle-score").innerText = shuffleScore;
+  
+  const pattern = shufflePatterns[shuffleCurrentPatternIndex];
+  document.getElementById("shuffle-vietnamese").innerText = pattern.vietnamese_meaning;
+  document.getElementById("shuffle-pinyin").innerText = pattern.pinyin;
+  
+  // Clean potentially lingering hint state in drop zone
+  const oldTip = document.getElementById("tip-text");
+  if (oldTip) oldTip.remove();
+  
+  shuffleCorrectSentence = pattern.chinese_sentence;
+  
+  // Safely parse words array from DB, whether it arrived as a string or array
+  let originalWords = [];
+  try {
+    if (typeof pattern.words === "string") {
+      originalWords = JSON.parse(pattern.words);
+    } else if (Array.isArray(pattern.words)) {
+      originalWords = [...pattern.words];
+    } else if (typeof pattern.words_json === "string") {
+      originalWords = JSON.parse(pattern.words_json);
+    }
+  } catch (e) {
+    console.warn("Failed to parse words array", e);
+  }
+  
+  if (!originalWords || originalWords.length === 0) {
+      originalWords = pattern.chinese_sentence.split("");
+  }
+  
+  let scrambled = [...originalWords].sort(() => Math.random() - 0.5);
+  
+  // To avoid it being fully solved accidentally right away
+  while(scrambled.join('') === originalWords.join('') && scrambled.length > 1) {
+    scrambled = [...originalWords].sort(() => Math.random() - 0.5);
+  }
+  
+  shuffleBankWords = scrambled;
+  shuffleSelectedWords = [];
+  
+  renderShuffleUI();
+}
+
+function renderShuffleUI() {
+  const bankContainer = document.getElementById("shuffle-word-bank");
+  const dropContainer = document.getElementById("shuffle-drop-zone");
+  
+  bankContainer.innerHTML = "";
+  dropContainer.innerHTML = "";
+  
+  // Render drop zone items
+  shuffleSelectedWords.forEach((wordObj, i) => {
+    const chip = document.createElement("div");
+    chip.className = "shuffle-word selected";
+    chip.innerText = wordObj.text;
+    chip.onclick = () => removeWordFromSentence(i);
+    dropContainer.appendChild(chip);
+  });
+  
+  // Render bank items
+  shuffleBankWords.forEach((text, i) => {
+    const isSelected = shuffleSelectedWords.some(sw => sw.originalIndex === i);
+    const chip = document.createElement("div");
+    chip.className = "shuffle-word " + (isSelected ? "hide" : "");
+    chip.innerText = text;
+    // Avoid double clicking
+    if (!isSelected) {
+      chip.onclick = () => addWordToSentence(text, i);
+    }
+    bankContainer.appendChild(chip);
+  });
+}
+
+function addWordToSentence(text, originalIndex) {
+  shuffleSelectedWords.push({ text, originalIndex });
+  renderShuffleUI();
+}
+
+function removeWordFromSentence(selectedIndex) {
+  shuffleSelectedWords.splice(selectedIndex, 1);
+  renderShuffleUI();
+}
+
+function checkShuffleAnswer() {
+  if (shuffleSelectedWords.length !== shuffleBankWords.length) {
+    alert("Vui lòng sắp xếp tất cả các từ vào câu.");
+    return;
+  }
+  
+  const currentSentence = shuffleSelectedWords.map(sw => sw.text).join("");
+  if (currentSentence === shuffleCorrectSentence) {
+    shuffleScore += 10;
+    speak(shuffleCorrectSentence);
+    document.getElementById("shuffle-drop-zone").style.backgroundColor = "rgba(0, 184, 148, 0.1)";
+    setTimeout(() => {
+      document.getElementById("shuffle-drop-zone").style.backgroundColor = "transparent";
+      shuffleCurrentPatternIndex++;
+      loadShufflePattern();
+    }, 1500);
+  } else {
+    document.getElementById("shuffle-drop-zone").style.backgroundColor = "rgba(214, 48, 49, 0.1)";
+    setTimeout(() => {
+      document.getElementById("shuffle-drop-zone").style.backgroundColor = "transparent";
+    }, 800);
+  }
+}
+
+function skipShuffle() {
+  shuffleCurrentPatternIndex++;
+  loadShufflePattern();
+}
+
+function showShuffleTip() {
+  const dropZone = document.getElementById("shuffle-drop-zone");
+  
+  if (dropZone && shuffleCorrectSentence) {
+    speak(shuffleCorrectSentence);
+    
+    // Only add a hint if one doesn't already exist
+    if (!document.getElementById("tip-text")) {
+      const hintSpan = document.createElement("span");
+      hintSpan.id = "tip-text";
+      hintSpan.style.cssText = shuffleSelectedWords.length === 0 
+        ? "color: var(--primary); font-size: 1.4rem; font-weight: bold; width: 100%; text-align: center; animation: fadeIn 0.3s; opacity: 0.6; pointer-events: none;"
+        : "color: var(--primary); font-size: 1.2rem; font-weight: bold; animation: fadeIn 0.3s; opacity: 0.6; margin-left: 10px; padding-top: 8px; pointer-events: none;";
+      hintSpan.innerText = shuffleCorrectSentence;
+      dropZone.appendChild(hintSpan);
+      
+      // Auto hide
+      setTimeout(() => {
+        if (document.getElementById("tip-text")) {
+          document.getElementById("tip-text").remove();
+        }
+      }, 3000);
+    }
+  }
+}
+
+// Ensure resetShuffleProgress is not duplicated at the end if it's moved up.
+

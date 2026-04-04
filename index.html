@@ -211,6 +211,9 @@
             <button class="option-btn" onclick="openGame('sniper')">
               <i class="fas fa-crosshairs"></i> Sniper Mode (Target Practice)
             </button>
+            <button class="option-btn" onclick="openGame('shuffle')">
+              <i class="fas fa-sort-alpha-down"></i> Shuffle (Sentence Sorting)
+            </button>
           </div>
         </div>
 
@@ -360,6 +363,160 @@
               </h2>
               <button class="btn-primary" onclick="startSniperMode()">
                 <i class="fas fa-sync"></i> Play Again
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SHUFFLE MODE -->
+        <div id="game-shuffle-container" class="hidden">
+          <div class="stats-bar">
+            <button class="btn-sm" onclick="backToGameMenu()">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <span style="font-size: 1.2rem; font-weight: bold"
+              >Câu: <b id="shuffle-progress" class="correct">0/0</b></span
+            >
+            <span style="font-size: 1.2rem; font-weight: bold"
+              >Điểm: <b id="shuffle-score" class="correct">0</b></span
+            >
+          </div>
+
+          <div
+            id="shuffle-loading"
+            class="card"
+            style="text-align: center; padding: 2rem"
+          >
+            <i
+              class="fas fa-spinner fa-spin"
+              style="
+                font-size: 2rem;
+                color: var(--primary);
+                margin-bottom: 1rem;
+              "
+            ></i>
+            <p>Đang tải dữ liệu từ máy chủ...</p>
+          </div>
+
+          <div
+            id="shuffle-decks-view"
+            class="card hidden"
+            style="padding: 1.5rem"
+          >
+            <h3 style="margin-bottom: 1rem; text-align: left;">Chọn chủ đề (Decks)</h3>
+            <div id="shuffle-decks-grid" class="shuffle-decks-grid">
+              <!-- Decks injected via JS -->
+            </div>
+          </div>
+
+          <div
+            id="shuffle-game-area"
+            class="card hidden"
+            style="padding: 1.5rem"
+          >
+            <div
+              style="
+                background: var(--bg-color);
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1.5rem;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-sub);
+                  text-transform: uppercase;
+                  font-weight: bold;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                Mẫu Câu
+              </div>
+              <div
+                id="shuffle-vietnamese"
+                style="font-size: 1.2rem; font-weight: 500"
+              >
+                ---
+              </div>
+              <div
+                id="shuffle-pinyin"
+                style="font-size: 1rem; color: var(--text-sub); margin-top: 5px"
+              >
+                ---
+              </div>
+            </div>
+
+            <p style="margin-bottom: 1rem; color: var(--text-sub)">
+              Sắp xếp các từ dưới đây thành câu tiếng Trung đúng:
+            </p>
+
+            <div
+              style="
+                border: 2px dashed var(--border);
+                border-radius: 8px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                min-height: 80px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: flex-start;
+              "
+              id="shuffle-drop-zone"
+            >
+              <!-- Selected words go here -->
+            </div>
+
+            <div
+              style="
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-sub);
+                  text-transform: uppercase;
+                  font-weight: bold;
+                  margin-bottom: 1rem;
+                "
+              >
+                Các từ có sẵn
+              </div>
+              <div
+                id="shuffle-word-bank"
+                style="display: flex; flex-wrap: wrap; gap: 10px"
+              >
+                <!-- Word pieces go here -->
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 2rem">
+              <button
+                id="shuffle-check-btn"
+                class="btn-primary"
+                style="flex: 2"
+                onclick="checkShuffleAnswer()"
+              >
+                Kiểm tra đáp án
+              </button>
+              <button
+                class="btn-secondary"
+                style="flex: 1; background: #f39c12; border: 1px solid #e67e22;"
+                onclick="showShuffleTip()"
+              >
+                <i class="fas fa-lightbulb"></i> Tip
+              </button>
+              <button
+                class="btn-secondary"
+                style="flex: 1"
+                onclick="skipShuffle()"
+              >
+                Bỏ qua
               </button>
             </div>
           </div>
