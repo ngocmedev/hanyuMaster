@@ -1,16 +1,16 @@
 /**
  * APP STATE
  */
-let decks = JSON.parse(localStorage.getItem("hanyu_decks"));
-if (!decks) {
-  let oldData = JSON.parse(localStorage.getItem("hanyu_master_data")) || [];
-  decks = [{ id: "default", name: "Mặc định", words: oldData }];
-  localStorage.setItem("hanyu_decks", JSON.stringify(decks));
+let decks = typeof predefinedDecks !== 'undefined' ? predefinedDecks : [];
+if (decks.length === 0) {
+  decks = [{ id: "default", name: "Mặc định", words: [] }];
 }
 let activeDeckId = localStorage.getItem("hanyu_active_deck") || decks[0].id;
 if (!decks.find((d) => d.id === activeDeckId)) activeDeckId = decks[0].id;
 
 let vocabulary = decks.find((d) => d.id === activeDeckId).words;
+let currentVocabPage = 1;
+const WORDS_PER_PAGE = 12;
 let currentItem = null;
 let currentSentence = null;
 let practiceType = "word"; // word or sentence
@@ -80,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  document.getElementById("add-btn").addEventListener("click", handleAddWord);
   document
     .getElementById("flash-submit")
     .addEventListener("click", checkFlashcard);
@@ -90,9 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("theme-toggle")
     .addEventListener("click", toggleTheme);
-  document
-    .getElementById("excel-upload")
-    .addEventListener("change", handleExcelImport);
 
   // Accessibility: Enter key support
   document.getElementById("flash-answer").addEventListener("keypress", (e) => {
@@ -189,7 +185,24 @@ function switchDeck(id) {
   activeDeckId = id;
   localStorage.setItem("hanyu_active_deck", id);
   vocabulary = decks.find((d) => d.id === activeDeckId).words;
+  currentVocabPage = 1;
   updateDecksUI();
+  updateVocabUI();
+}
+
+function scrollDecks(direction) {
+  const container = document.getElementById("decks-list");
+  if (container) {
+    const scrollAmount = 300;
+    container.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
+  }
+}
+
+function changeVocabPage(change) {
+  const totalPages = Math.ceil(vocabulary.length / WORDS_PER_PAGE) || 1;
+  currentVocabPage += change;
+  if (currentVocabPage < 1) currentVocabPage = 1;
+  if (currentVocabPage > totalPages) currentVocabPage = totalPages;
   updateVocabUI();
 }
 
@@ -239,10 +252,6 @@ function updateDecksUI() {
     card.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
         <div class="deck-title" style="margin-bottom:0;">${d.name}</div>
-        <div>
-           <button class="btn-sm" style="background:none; border:none; color:var(--text-sub); cursor:pointer;" onclick="renameDeck('${d.id}', event)"><i class="fas fa-edit"></i></button>
-           <button class="btn-sm" style="background:none; border:none; color:var(--error); cursor:pointer;" onclick="destroyDeck('${d.id}', event)"><i class="fas fa-trash"></i></button>
-        </div>
       </div>
       <div class="deck-count">${d.words.length} từ</div>
     `;
@@ -459,63 +468,63 @@ function loadSentenceFlashcard() {
       {
         zh: "我喜欢这个[word]。",
         py: "wǒ xǐ huan zhè ge [word].",
-        vi: "Tôi thích [word] này.",     // S + V + O
+        vi: "Tôi thích [word] này.", // S + V + O
       },
       {
         zh: "你的[word]在哪儿？",
         py: "nǐ de [word] zài nǎr?",
-        vi: "[word] của bạn ở đâu?",   // S + 在 + địa điểm & Câu hỏi nghi vấn
+        vi: "[word] của bạn ở đâu?", // S + 在 + địa điểm & Câu hỏi nghi vấn
       },
       {
         zh: "我没有[word]。",
         py: "wǒ méi yǒu [word].",
-        vi: "Tôi không có [word].",      // S + 没有 + O
+        vi: "Tôi không có [word].", // S + 没有 + O
       },
       {
         zh: "这个[word]很大。",
         py: "zhè ge [word] hěn dà.",
-        vi: "[word] này rất lớn.",       // S + 很 + Adj
+        vi: "[word] này rất lớn.", // S + 很 + Adj
       },
       {
         zh: "那是谁的[word]？",
         py: "nà shì shéi de [word]?",
-        vi: "Đó là [word] của ai?",      // Cấu trúc "的"
-      }
+        vi: "Đó là [word] của ai?", // Cấu trúc "的"
+      },
     ],
 
     verb: [
       {
         zh: "我想[word]。",
         py: "wǒ xiǎng [word].",
-        vi: "Tôi muốn [word]."           // MUỐN (想)
+        vi: "Tôi muốn [word].", // MUỐN (想)
       },
       {
         zh: "他正在[word]。",
         py: "tā zhèng zài [word].",
-        vi: "Anh ấy đang [word].",       // ĐANG DIỄN RA (正在)
+        vi: "Anh ấy đang [word].", // ĐANG DIỄN RA (正在)
       },
       {
         zh: "不要[word]！",
         py: "bú yào [word]!",
-        vi: "Đừng [word]!",              // MỆNH LỆNH (不要)
+        vi: "Đừng [word]!", // MỆNH LỆNH (不要)
       },
       {
         zh: "我已经[word]了。",
         py: "wǒ yǐ jīng [word] le.",
-        vi: "Tôi đã [word] rồi.",        // QUÁ KHỨ (了)
+        vi: "Tôi đã [word] rồi.", // QUÁ KHỨ (了)
       },
       {
         zh: "你可以[word]吗？",
         py: "nǐ kě yǐ [word] ma?",
-        vi: "Bạn có thể [word] không?",  // CÓ THỂ (可以) & Câu hỏi "吗"
-      }
+        vi: "Bạn có thể [word] không?", // CÓ THỂ (可以) & Câu hỏi "吗"
+      },
     ],
 
     adj: [
       {
         zh: "他很[word]。",
         py: "tā hěn [word].",
-        vi: "Anh ấy rất [word].",        // S + 很 + Adj
+        vi: "Anh ấy rất [word].", // S + 很 + Adj
       },
       {
         zh: "今天比昨天[word]。",
@@ -525,47 +534,47 @@ function loadSentenceFlashcard() {
       {
         zh: "我不[word]。",
         py: "wǒ bù [word].",
-        vi: "Tôi không [word].",         // PHỦ ĐỊNH (不)
+        vi: "Tôi không [word].", // PHỦ ĐỊNH (不)
       },
       {
         zh: "越来越[word]了。",
         py: "yuè lái yuè [word] le.",
-        vi: "Càng ngày càng [word].",    // CÀNG… CÀNG… (越…越…)
+        vi: "Càng ngày càng [word].", // CÀNG… CÀNG… (越…越…)
       },
       {
         zh: "为什么那么[word]？",
         py: "wèi shén me nà me [word]?",
-        vi: "Tại sao lại [word] thế?",   // TẠI SAO (为什么)
-      }
+        vi: "Tại sao lại [word] thế?", // TẠI SAO (为什么)
+      },
     ],
 
     pronoun: [
       {
         zh: "[word]是老师。",
         py: "[word] shì lǎo shī.",
-        vi: "[word] là giáo viên.",      // Câu “là” (是)
+        vi: "[word] là giáo viên.", // Câu “là” (是)
       },
       {
         zh: "我和[word]一起去。",
         py: "wǒ hé [word] yì qǐ qù.",
-        vi: "Tôi đi cùng [word].",       // LIÊN KẾT CÂU (和)
+        vi: "Tôi đi cùng [word].", // LIÊN KẾT CÂU (和)
       },
       {
         zh: "我给[word]打电话。",
         py: "wǒ gěi [word] dǎ diàn huà.",
-        vi: "Tôi gọi điện cho [word].",  // CẤU TRÚC “给”
+        vi: "Tôi gọi điện cho [word].", // CẤU TRÚC “给”
       },
       {
         zh: "[word]想吃苹果。",
         py: "[word] xiǎng chī píng guǒ.",
-        vi: "[word] muốn ăn táo.",       // MUỐN (想)
+        vi: "[word] muốn ăn táo.", // MUỐN (想)
       },
       {
         zh: "[word]喜欢咖啡吗？",
         py: "[word] xǐ huan kā fēi ma?",
         vi: "[word] có thích cà phê không?", // Câu hỏi “吗”
-      }
-    ]
+      },
+    ],
   };
 
   const targetWord = validWords[Math.floor(Math.random() * validWords.length)];
@@ -800,7 +809,18 @@ function updateVocabUI() {
     document.getElementById("vocab-count").innerText = vocabulary.length;
   }
   list.innerHTML = "";
-  vocabulary.forEach((v) => {
+
+  const totalPages = Math.ceil(vocabulary.length / WORDS_PER_PAGE) || 1;
+  const startIndex = (currentVocabPage - 1) * WORDS_PER_PAGE;
+  const endIndex = startIndex + WORDS_PER_PAGE;
+  const pageVocab = vocabulary.slice(startIndex, endIndex);
+
+  const pageInfo = document.getElementById("vocab-page-info");
+  if (pageInfo) {
+    pageInfo.innerText = `Trang ${currentVocabPage} / ${totalPages}`;
+  }
+
+  pageVocab.forEach((v) => {
     const div = document.createElement("div");
     div.className = "vocab-item";
     // Pos label formatting
@@ -1032,7 +1052,9 @@ function openGame(gameId) {
     document.getElementById("sniper-game-over").style.display = "none";
     startSniperMode();
   } else if (gameId === "shuffle") {
-    document.getElementById("game-shuffle-container").classList.remove("hidden");
+    document
+      .getElementById("game-shuffle-container")
+      .classList.remove("hidden");
     startShuffleGame();
   }
 }
@@ -1614,6 +1636,8 @@ function backToListeningMenu() {
 /**
  * SHUFFLE GAME LOGIC
  */
+const API_BASE = window.location.port === "5500" || window.location.hostname === "127.0.0.1" && window.location.port === "5500" ? "http://localhost/hanyuMaster/api" : "./api";
+
 let shufflePatterns = [];
 let shuffleCurrentPatternIndex = 0;
 let shuffleScore = 0;
@@ -1627,15 +1651,17 @@ async function startShuffleGame() {
   document.getElementById("shuffle-loading").classList.remove("hidden");
   document.getElementById("shuffle-game-area").classList.add("hidden");
   document.getElementById("shuffle-decks-view").classList.add("hidden");
-  
+
   try {
-    const response = await fetch('./api/get_decks.php');
+    const response = await fetch(`${API_BASE}/get_decks.php`);
     if (!response.ok) throw new Error("API Network error");
     const json = await response.json();
     if (json.success && json.data.length > 0) {
       renderShuffleDecks(json.data);
     } else {
-      alert("Chưa có chủ đề mẫu câu trong cơ sở dữ liệu. Vui lòng chạy http://localhost/.../api/init_db.php");
+      alert(
+        "Chưa có chủ đề mẫu câu trong cơ sở dữ liệu. Vui lòng chạy http://localhost/.../api/init_db.php",
+      );
       backToGameMenu();
     }
   } catch (err) {
@@ -1648,15 +1674,15 @@ async function startShuffleGame() {
 function renderShuffleDecks(decks) {
   document.getElementById("shuffle-loading").classList.add("hidden");
   document.getElementById("shuffle-decks-view").classList.remove("hidden");
-  
+
   const grid = document.getElementById("shuffle-decks-grid");
   grid.innerHTML = "";
-  
-  decks.forEach(deck => {
+
+  decks.forEach((deck) => {
     const card = document.createElement("div");
     card.className = "shuffle-deck-card";
     card.onclick = () => selectShuffleDeck(deck.deck_name);
-    
+
     card.innerHTML = `
       <div class="shuffle-deck-title" style="margin-bottom: 12px; font-weight: bold; font-size: 1.05rem;">
         <span style="color: #2c3e50;">${deck.deck_name}</span>
@@ -1664,7 +1690,7 @@ function renderShuffleDecks(decks) {
       </div>
       <div class="shuffle-deck-subtitle" style="color: #a4b0be; font-size: 0.85rem;">Các từ vựng trong chủ đề ${deck.deck_name}</div>
     `;
-    
+
     grid.appendChild(card);
   });
 }
@@ -1672,13 +1698,15 @@ function renderShuffleDecks(decks) {
 async function selectShuffleDeck(deckName) {
   document.getElementById("shuffle-decks-view").classList.add("hidden");
   document.getElementById("shuffle-loading").classList.remove("hidden");
-  
+
   shufflePatterns = [];
   shuffleCurrentPatternIndex = 0;
   shuffleScore = 0;
-  
+
   try {
-    const response = await fetch(`./api/get_patterns.php?deck=${encodeURIComponent(deckName)}`);
+    const response = await fetch(
+      `${API_BASE}/get_patterns.php?deck=${encodeURIComponent(deckName)}`,
+    );
     if (!response.ok) throw new Error("API Network error");
     const json = await response.json();
     if (json.success && json.data.length > 0) {
@@ -1698,26 +1726,28 @@ async function selectShuffleDeck(deckName) {
 function loadShufflePattern() {
   document.getElementById("shuffle-loading").classList.add("hidden");
   document.getElementById("shuffle-game-area").classList.remove("hidden");
-  
+
   if (shuffleCurrentPatternIndex >= shufflePatterns.length) {
     alert("Chúc mừng! Bạn đã hoàn thành tất cả các câu hỏi trong chủ đề này.");
     startShuffleGame(); // Return to decks view
     return;
   }
-  
-  document.getElementById("shuffle-progress").innerText = `${shuffleCurrentPatternIndex + 1}/${shufflePatterns.length}`;
+
+  document.getElementById("shuffle-progress").innerText =
+    `${shuffleCurrentPatternIndex + 1}/${shufflePatterns.length}`;
   document.getElementById("shuffle-score").innerText = shuffleScore;
-  
+
   const pattern = shufflePatterns[shuffleCurrentPatternIndex];
-  document.getElementById("shuffle-vietnamese").innerText = pattern.vietnamese_meaning;
-  document.getElementById("shuffle-pinyin").innerText = pattern.pinyin;
-  
+  document.getElementById("shuffle-vietnamese").innerText =
+    pattern.vietnamese_meaning;
+  document.getElementById("shuffle-pinyin").innerText = "";
+
   // Clean potentially lingering hint state in drop zone
   const oldTip = document.getElementById("tip-text");
   if (oldTip) oldTip.remove();
-  
+
   shuffleCorrectSentence = pattern.chinese_sentence;
-  
+
   // Safely parse words array from DB, whether it arrived as a string or array
   let originalWords = [];
   try {
@@ -1731,31 +1761,34 @@ function loadShufflePattern() {
   } catch (e) {
     console.warn("Failed to parse words array", e);
   }
-  
+
   if (!originalWords || originalWords.length === 0) {
-      originalWords = pattern.chinese_sentence.split("");
+    originalWords = pattern.chinese_sentence.split("");
   }
-  
+
   let scrambled = [...originalWords].sort(() => Math.random() - 0.5);
-  
+
   // To avoid it being fully solved accidentally right away
-  while(scrambled.join('') === originalWords.join('') && scrambled.length > 1) {
+  while (
+    scrambled.join("") === originalWords.join("") &&
+    scrambled.length > 1
+  ) {
     scrambled = [...originalWords].sort(() => Math.random() - 0.5);
   }
-  
+
   shuffleBankWords = scrambled;
   shuffleSelectedWords = [];
-  
+
   renderShuffleUI();
 }
 
 function renderShuffleUI() {
   const bankContainer = document.getElementById("shuffle-word-bank");
   const dropContainer = document.getElementById("shuffle-drop-zone");
-  
+
   bankContainer.innerHTML = "";
   dropContainer.innerHTML = "";
-  
+
   // Render drop zone items
   shuffleSelectedWords.forEach((wordObj, i) => {
     const chip = document.createElement("div");
@@ -1764,10 +1797,12 @@ function renderShuffleUI() {
     chip.onclick = () => removeWordFromSentence(i);
     dropContainer.appendChild(chip);
   });
-  
+
   // Render bank items
   shuffleBankWords.forEach((text, i) => {
-    const isSelected = shuffleSelectedWords.some(sw => sw.originalIndex === i);
+    const isSelected = shuffleSelectedWords.some(
+      (sw) => sw.originalIndex === i,
+    );
     const chip = document.createElement("div");
     chip.className = "shuffle-word " + (isSelected ? "hide" : "");
     chip.innerText = text;
@@ -1794,21 +1829,25 @@ function checkShuffleAnswer() {
     alert("Vui lòng sắp xếp tất cả các từ vào câu.");
     return;
   }
-  
-  const currentSentence = shuffleSelectedWords.map(sw => sw.text).join("");
+
+  const currentSentence = shuffleSelectedWords.map((sw) => sw.text).join("");
   if (currentSentence === shuffleCorrectSentence) {
     shuffleScore += 10;
     speak(shuffleCorrectSentence);
-    document.getElementById("shuffle-drop-zone").style.backgroundColor = "rgba(0, 184, 148, 0.1)";
+    document.getElementById("shuffle-drop-zone").style.backgroundColor =
+      "rgba(0, 184, 148, 0.1)";
     setTimeout(() => {
-      document.getElementById("shuffle-drop-zone").style.backgroundColor = "transparent";
+      document.getElementById("shuffle-drop-zone").style.backgroundColor =
+        "transparent";
       shuffleCurrentPatternIndex++;
       loadShufflePattern();
     }, 1500);
   } else {
-    document.getElementById("shuffle-drop-zone").style.backgroundColor = "rgba(214, 48, 49, 0.1)";
+    document.getElementById("shuffle-drop-zone").style.backgroundColor =
+      "rgba(214, 48, 49, 0.1)";
     setTimeout(() => {
-      document.getElementById("shuffle-drop-zone").style.backgroundColor = "transparent";
+      document.getElementById("shuffle-drop-zone").style.backgroundColor =
+        "transparent";
     }, 800);
   }
 }
@@ -1820,20 +1859,21 @@ function skipShuffle() {
 
 function showShuffleTip() {
   const dropZone = document.getElementById("shuffle-drop-zone");
-  
+
   if (dropZone && shuffleCorrectSentence) {
     speak(shuffleCorrectSentence);
-    
+
     // Only add a hint if one doesn't already exist
     if (!document.getElementById("tip-text")) {
       const hintSpan = document.createElement("span");
       hintSpan.id = "tip-text";
-      hintSpan.style.cssText = shuffleSelectedWords.length === 0 
-        ? "color: var(--primary); font-size: 1.4rem; font-weight: bold; width: 100%; text-align: center; animation: fadeIn 0.3s; opacity: 0.6; pointer-events: none;"
-        : "color: var(--primary); font-size: 1.2rem; font-weight: bold; animation: fadeIn 0.3s; opacity: 0.6; margin-left: 10px; padding-top: 8px; pointer-events: none;";
-      hintSpan.innerText = shuffleCorrectSentence;
+      hintSpan.style.cssText =
+        shuffleSelectedWords.length === 0
+          ? "color: var(--primary); font-size: 1.4rem; font-weight: bold; width: 100%; text-align: center; animation: fadeIn 0.3s; opacity: 0.6; pointer-events: none;"
+          : "color: var(--primary); font-size: 1.2rem; font-weight: bold; animation: fadeIn 0.3s; opacity: 0.6; margin-left: 10px; padding-top: 8px; pointer-events: none;";
+      hintSpan.innerText = shufflePatterns[shuffleCurrentPatternIndex].pinyin;
       dropZone.appendChild(hintSpan);
-      
+
       // Auto hide
       setTimeout(() => {
         if (document.getElementById("tip-text")) {
@@ -1845,4 +1885,3 @@ function showShuffleTip() {
 }
 
 // Ensure resetShuffleProgress is not duplicated at the end if it's moved up.
-

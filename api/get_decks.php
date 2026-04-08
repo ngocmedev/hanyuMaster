@@ -1,10 +1,11 @@
 <?php
 // api/get_decks.php
-
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // Allow local origins if accessed across separate domains
 
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 

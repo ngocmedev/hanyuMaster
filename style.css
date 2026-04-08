@@ -107,7 +107,33 @@ section.active {
   overflow-x: auto;
   gap: 1rem;
   padding: 1rem 0;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.decks-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-nav-btn {
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  color: var(--text-main);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.carousel-nav-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: scale(1.05);
 }
 .deck-card {
   min-width: 250px;

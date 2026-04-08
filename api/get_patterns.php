@@ -4,7 +4,7 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // Allow local origins if accessed across separate domains
 
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
@@ -19,12 +19,12 @@ $conn->set_charset("utf8mb4");
 $deck = isset($_GET['deck']) ? $_GET['deck'] : '';
 
 if (!empty($deck)) {
-    $stmt = $conn->prepare("SELECT id, chinese_sentence, pinyin, vietnamese_meaning, words_json FROM sentence_patterns WHERE deck_name = ? ORDER BY RAND() LIMIT 20");
+    $stmt = $conn->prepare("SELECT id, chinese_sentence, pinyin, vietnamese_meaning, words_json FROM sentence_patterns WHERE deck_name = ? ORDER BY RAND()");
     $stmt->bind_param("s", $deck);
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    $sql = "SELECT id, chinese_sentence, pinyin, vietnamese_meaning, words_json FROM sentence_patterns ORDER BY RAND() LIMIT 20";
+    $sql = "SELECT id, chinese_sentence, pinyin, vietnamese_meaning, words_json FROM sentence_patterns ORDER BY RAND()";
     $result = $conn->query($sql);
 }
 

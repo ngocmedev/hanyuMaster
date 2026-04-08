@@ -43,54 +43,18 @@
       <section id="manage-section" class="active">
         <div class="card">
           <h2>Thư viện từ vựng</h2>
-          <div class="input-group">
-            <input
-              type="text"
-              id="chinese-input"
-              placeholder="Nhập Hanzi (VD: 学习)"
-            />
-            <select id="pos-input" class="pos-select">
-              <option value="none">Từ loại (Auto)</option>
-              <option value="noun">Danh từ</option>
-              <option value="verb">Động từ</option>
-              <option value="pronoun">Đại từ</option>
-              <option value="adj">Tính từ</option>
-            </select>
-            <button id="add-btn" class="btn-primary">Thêm</button>
-          </div>
-
-          <div class="import-tools">
-            <p>Thêm file excel vào đây(.xlsx)</p>
-            <input
-              type="file"
-              id="excel-upload"
-              accept=".xlsx, .xls, .csv"
-              hidden
-            />
-            <button
-              class="btn-secondary"
-              onclick="document.getElementById('excel-upload').click()"
-            >
-              <i class="fas fa-file-import"></i> Import Excel
-            </button>
-            <button class="btn-text" onclick="downloadTemplate()">
-              Tải Mẫu Excel
-            </button>
-          </div>
+          <!-- Vocabulary UI Removed -->
         </div>
 
         <div class="decks-section">
           <div class="library-header">
             <h3>Bộ từ vựng của bạn</h3>
-            <button
-              class="btn-primary btn-sm"
-              style="padding: 6px 12px"
-              onclick="createNewDeck()"
-            >
-              + Bộ mới
-            </button>
           </div>
-          <div id="decks-list" class="decks-carousel"></div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="carousel-nav-btn" onclick="scrollDecks(-1)" title="Cuộn trái"><i class="fas fa-chevron-left"></i></button>
+            <div id="decks-list" class="decks-carousel" style="flex: 1;"></div>
+            <button class="carousel-nav-btn" onclick="scrollDecks(1)" title="Cuộn phải"><i class="fas fa-chevron-right"></i></button>
+          </div>
         </div>
 
         <div class="library-header" style="margin-top: 2rem">
@@ -101,11 +65,13 @@
             >
             từ)
           </h3>
-          <button class="btn-danger-outline" onclick="resetProgress()">
-            Xoá Bộ Này
-          </button>
         </div>
         <div id="vocab-list" class="vocab-grid"></div>
+        <div id="vocab-pagination" style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; align-items: center;">
+          <button class="btn-secondary btn-sm" onclick="changeVocabPage(-1)"><i class="fas fa-chevron-left"></i> Trang trước</button>
+          <span id="vocab-page-info" style="font-weight: bold;">Trang 1 / 1</span>
+          <button class="btn-secondary btn-sm" onclick="changeVocabPage(1)">Trang sau <i class="fas fa-chevron-right"></i></button>
+        </div>
       </section>
 
       <!-- FLASHCARD SECTION -->
@@ -403,7 +369,9 @@
             class="card hidden"
             style="padding: 1.5rem"
           >
-            <h3 style="margin-bottom: 1rem; text-align: left;">Chọn chủ đề (Decks)</h3>
+            <h3 style="margin-bottom: 1rem; text-align: left">
+              Chọn chủ đề (Decks)
+            </h3>
             <div id="shuffle-decks-grid" class="shuffle-decks-grid">
               <!-- Decks injected via JS -->
             </div>
@@ -441,7 +409,12 @@
               </div>
               <div
                 id="shuffle-pinyin"
-                style="font-size: 1rem; color: var(--text-sub); margin-top: 5px"
+                style="
+                  display: none;
+                  font-size: 1rem;
+                  color: var(--text-sub);
+                  margin-top: 5px;
+                "
               >
                 ---
               </div>
@@ -506,7 +479,7 @@
               </button>
               <button
                 class="btn-secondary"
-                style="flex: 1; background: #f39c12; border: 1px solid #e67e22;"
+                style="flex: 1; background: #f39c12; border: 1px solid #e67e22"
                 onclick="showShuffleTip()"
               >
                 <i class="fas fa-lightbulb"></i> Tip
@@ -602,6 +575,7 @@
       </section>
     </main>
 
+    <script src="decks.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

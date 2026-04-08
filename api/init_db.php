@@ -1,7 +1,7 @@
 <?php
 // api/init_db.php
 
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 // First, connect without selecting a database
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS);
